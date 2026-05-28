@@ -12,8 +12,7 @@
     .card-title-custom { font-size: 0.9rem; color: #6c757d; font-weight: bold; text-transform: uppercase; }
     .card-value-custom { font-size: 1.2rem; color: #212529; font-weight: bold; margin-top: 5px; }
     .section-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; }
-    .badge-pending { background-color: #ffc107; color: #000; }
-    .badge-approved { background-color: #198754; color: #fff; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
@@ -81,9 +80,7 @@
 
         <div class="col-md-12">
           <label class="form-label fw-semibold">रक्तदान गर्ने क्लबको नाम * (धेरै भए Ctrl थिचेर छान्नुहोस्)</label>
-          <select class="form-select" id="clubsSelect" multiple style="height: 120px;" required>
-            </select>
-          <small class="text-muted">* एक भन्दा बढी क्लब भए बहु-चयन (Multiple Select) गर्नुहोस्।</small>
+          <select class="form-select" id="clubsSelect" multiple style="height: 150px;" required></select>
         </div>
 
         <div class="col-md-4">
@@ -108,7 +105,7 @@
     </form>
   </div>
 
-  <div class="section-card d-none" id="adminPanel">
+  <div class="section-card hidden" id="adminPanel">
     <h4 class="mb-4 text-primary border-bottom pb-2">🛡️ एडमिन प्यानल (Admin Control Dashboard)</h4>
     
     <h5 class="text-warning fw-bold mb-3">⏳ स्वीकृत हुन बाँकी कार्यक्रमहरू (Pending Approvals)</h5>
@@ -119,9 +116,7 @@
             <th>मिति</th><th>सहयोगी संस्था</th><th>आयोजक क्लबहरू</th><th>स्थान</th><th>पिन्ट</th><th>कार्य</th>
           </tr>
         </thead>
-        <tbody id="pendingTableBody">
-          <tr><td colspan="6" class="text-center text-muted">कुनै पनि रेकर्ड पेन्डिङ छैन।</td></tr>
-        </tbody>
+        <tbody id="pendingTableBody"></tbody>
       </table>
     </div>
 
@@ -137,7 +132,7 @@
     </div>
   </div>
 
-  <div class="section-card">
+  <div class="section-card" id="liveTableSection">
     <h4 class="mb-3 text-success border-bottom pb-2">📢 स्वीकृत क्याम्पहरूको प्रत्यक्ष विवरण (Live Camps View)</h4>
     <div class="table-responsive">
       <table class="table table-hover align-middle">
@@ -146,8 +141,7 @@
             <th>मिति</th><th>आयोजक क्लब(हरू)</th><th>सहयोगी संस्था</th><th>स्थान - समय</th><th>संकलन (पिन्ट)</th><th>Approved By</th>
           </tr>
         </thead>
-        <tbody id="liveTableBody">
-          </tbody>
+        <tbody id="liveTableBody"></tbody>
       </table>
     </div>
   </div>
@@ -192,15 +186,26 @@
   function toggleLoginModal() {
     if(!currentUser) { myModal.toggle(); } 
     else {
-      // Logout logic
       currentUser = null;
       document.getElementById('userBadge').classList.add('d-none');
       document.getElementById('loginBtn').classList.remove('d-none');
-      document.getElementById('adminPanel').classList.add('d-none');
+      updateUIVisibility();
+      loadSystemData();
     }
   }
 
-  // सुरुमै गुगल सिटबाट सबै डाटा लोड गर्ने
+  function updateUIVisibility() {
+    if (currentUser) {
+      document.getElementById('formSection').classList.add('hidden');
+      document.getElementById('liveTableSection').classList.add('hidden');
+      document.getElementById('adminPanel').classList.remove('hidden');
+    } else {
+      document.getElementById('formSection').classList.remove('hidden');
+      document.getElementById('liveTableSection').classList.remove('hidden');
+      document.getElementById('adminPanel').classList.add('hidden');
+    }
+  }
+
   function loadSystemData() {
     fetch(WEB_APP_URL, {
       method: "POST",
@@ -208,7 +213,6 @@
     })
     .then(res => res.json())
     .then(data => {
-      // क्लब Dropdown भर्ने
       const select = document.getElementById('clubsSelect');
       select.innerHTML = '';
       data.clubs.forEach(c => {
@@ -217,19 +221,14 @@
         select.appendChild(opt);
       });
 
-      // तथ्याङ्क (Stats) अपडेट गर्ने
       document.getElementById('statTopCamp').innerText = data.stats.topCampClub;
       document.getElementById('statTopPint').innerText = data.stats.topPintClub;
 
-      // लाइभ तालिकाहरू भर्ने
       renderLiveTable(data.approvedRecords);
-      if(currentUser) {
-        renderAdminPanel(data);
-      }
+      renderAdminData(data);
     });
   }
 
-  // फारम सबमिट गर्ने लजिक
   function handleFormSubmit(e) {
     e.preventDefault();
     document.getElementById('submitBtn').disabled = true;
@@ -259,7 +258,6 @@
     });
   }
 
-  // लगइन प्रक्रिया
   function processLogin() {
     let u = document.getElementById('loginUser').value;
     let p = document.getElementById('loginPass').value;
@@ -280,7 +278,8 @@
         badge.style.cursor = "pointer";
         badge.onclick = toggleLoginModal;
         
-        loadSystemData(); // एडमिन प्यानल देखाउन डाटाहरू पुनः रिफ्रेस गर्ने
+        updateUIVisibility();
+        loadSystemData();
       } else {
         let err = document.getElementById('loginError');
         err.innerText = res.message;
@@ -289,15 +288,11 @@
     });
   }
 
-  // एडमिन ड्यासबोर्ड रेन्डर गर्ने
-  function renderAdminPanel(data) {
-    document.getElementById('adminPanel').classList.remove('d-none');
-    
-    // पेन्डिङ तालिका
+  function renderAdminData(data) {
     let tbody = document.getElementById('pendingTableBody');
     tbody.innerHTML = '';
     if(data.pendingRecords.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">कुनै पनि रेकर्ड पेन्डिङ छैन।</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">कुनै पनि रेकرد पेन्डिङ छैन।</td></tr>`;
     } else {
       data.pendingRecords.forEach(r => {
         tbody.innerHTML += `
@@ -309,14 +304,12 @@
       });
     }
 
-    // बाँकी क्लबहरू
     let pClubsUl = document.getElementById('pendingClubsList');
     pClubsUl.innerHTML = '';
     data.pendingClubs.forEach(c => {
       pClubsUl.innerHTML += `<li class="list-group-item list-group-item-danger small">📍 ${c}</li>`;
     });
 
-    // गरिसकेका क्लबहरू
     let aClubsUl = document.getElementById('activeClubsList');
     aClubsUl.innerHTML = '';
     data.activeClubs.forEach(c => {
@@ -324,7 +317,6 @@
     });
   }
 
-  // एप्रुभल बटन थिच्दा चल्ने कोड
   function approveRecord(id) {
     if(confirm("के तपाईं यो रेकर्ड एप्रुभ गर्न निश्चित हुनुहुन्छ?")) {
       fetch(WEB_APP_URL, {
@@ -334,19 +326,18 @@
       .then(res => res.json())
       .then(res => {
         if(res.status === "approved") {
-          alert("क्याम्प रेकर्ड स्वीकृत (Approved) भयो र डाटा लाइभ भयो।");
+          alert("क्याम्प रेकर्ड स्वीकृत (Approved) भयो।");
           loadSystemData();
         }
       });
     }
   }
 
-  // स्वीकृत लाइभ रेकर्डहरू देखाउने
   function renderLiveTable(records) {
     let tbody = document.getElementById('liveTableBody');
     tbody.innerHTML = '';
     if(records.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">कुनै पनि स्वीकृत क्याम्पको विवरण फेला परेन।</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">कुनै विवरण फेला परेन।</td></tr>`;
     } else {
       records.forEach(r => {
         tbody.innerHTML += `
