@@ -282,7 +282,7 @@
     let tbody = document.getElementById('upcomingTableBody');
     tbody.innerHTML = '';
     if(records.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">अहिले कुनै पनि आगामी क्याम्प तय गरिएको छैन।</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">अहिले कुनै पनि आगामी क्याम्प तय गरिएको छैन ।</td></tr>`;
     } else {
       records.forEach(r => {
         tbody.innerHTML += `
@@ -362,7 +362,7 @@
     let tbody = document.getElementById('pendingTableBody');
     tbody.innerHTML = '';
     if(data.pendingRecords.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">कुनै पनि नयाँ रेकर्ड पेन्डिङ छैन।</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">कुनै पनि नयाँ रेकर्ड पेन्डिङ छैन ।</td></tr>`;
     } else {
       data.pendingRecords.forEach(r => {
         tbody.innerHTML += `
@@ -404,7 +404,7 @@
   }
 
   function approveRecord(id) {
-    if(confirm("के तपाईं यो रेकर्ड एप्रुभ गर्न निश्चित हुनुहुन्छ?")) {
+    if(confirm("के तपाईं यो रेकर्ड एप्रुभ गर्न निश्चित हुनुहुन्छ ?")) {
       fetch(WEB_APP_URL, {
         method: "POST",
         body: JSON.stringify({ action: "approveRecord", recordId: id, approvedBy: currentUser })
@@ -418,11 +418,11 @@
   function convertUpcomingToPast(id) {
     let pintsVal = document.getElementById(`pints_${id}`).value;
     if(!pintsVal || pintsVal <= 0) {
-      alert("कृपया उक्त क्याम्पमा संकलन भएको कुल ब्लड पिन्ट संख्या भर्नुहोस्।");
+      alert("कृपया उक्त क्याम्पमा संकलन भएको कुल ब्लड पिन्ट संख्या भर्नुहोस् ।");
       return;
     }
     
-    if(confirm("के यो क्याम्प सफलतापूर्वक सम्पन्न भयो? यसलाई मुख्य रेकर्डमा सार्दैछौँ।")) {
+    if(confirm("के यो क्याम्प सफलतापूर्वक सम्पन्न भयो ? यसलाई मुख्य रेकर्डमा सार्दैछौँ ।")) {
       // पहिले सिटमा पिन्ट संख्या अपडेट गर्ने प्रबन्ध मिलाउन र स्टेटस बदल्न एप्रुभल कल गर्ने
       fetch(WEB_APP_URL, {
         method: "POST",
@@ -432,7 +432,7 @@
       .then(res => {
         if(res.status === "approved") {
           // सिटमा पिन्ट संख्या थप्न आवश्यक प्रक्रिया (यसले गुगल सिटको पिन्ट अपडेट गर्छ)
-          alert("क्याम्प सफलतापूर्वक सम्पन्न सूची (Live Camps) मा सारियो।");
+          alert("क्याम्प सफलतापूर्वक सम्पन्न सूची (Live Camps) मा सारियो ।");
           loadSystemData();
         }
       });
@@ -443,7 +443,7 @@
     let tbody = document.getElementById('liveTableBody');
     tbody.innerHTML = '';
     if(records.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">कुनै विवरण फेला परेन।</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">कुनै विवरण फेला परेन ।</td></tr>`;
     } else {
       records.forEach(r => {
         tbody.innerHTML += `
