@@ -17,19 +17,20 @@
     .hidden { display: none !important; }
     .swal2-popup { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important; }
     
-    /* 🛠️ ब्ल्याङ्क रिपोर्ट फिक्स: सुरुमा यसलाई भिजुअली हाइड मात्र गर्ने, हटाउने होइन */
+    /* 🛠️ फिक्स्ड जुम-प्रुफ लेआउट: भ्युपोर्ट खलबल नबनाई ब्याकग्राउन्डमै लक गरिएको */
     #pdfWrapper {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      z-index: -1;
-      opacity: 0;
+      width: 794px; /* स्ट्यान्डर्ड A4 चौडाइ */
+      height: auto;
+      z-index: -9999;
+      opacity: 0.02;
       pointer-events: none;
+      overflow: hidden;
     }
     .pdf-container {
-      width: 750px;
-      margin: 0 auto;
+      width: 100%;
       background: #ffffff !important;
       color: #000000 !important;
       padding: 40px;
@@ -196,7 +197,7 @@
 
     <div class="row">
       <div class="col-md-6">
-        <h5 class="text-danger fw-bold mb-3">🛑 कार्यक्रम गर्न बाँकी क्लबहरू</h5>
+        <h5 class="text-danger fw-bold mb-3">🛑 कार्यक्रम करना बाँकी क्लबहरू</h5>
         <ul class="list-group" id="pendingClubsList" style="max-height: 250px; overflow-y: auto;"></ul>
       </div>
       <div class="col-md-6">
@@ -222,11 +223,14 @@
 
 </div>
 
-<!-- 📦 इन्जिनियरिङ मिलाइएको सुरक्षित PDF रेन्डर कन्टेनर (अन-फ्लिक्स ब्ल्याङ्क विन्डो) -->
+<!-- 📦 इन्जिनियरिङ मिलाइएको सुरक्षित जुम-प्रुफ र लोगो सहितको PDF रेन्डर कन्टेनर -->
 <div id="pdfWrapper">
   <div class="pdf-container" id="pdfRenderArea">
     <div class="pdf-header-line"></div>
     <div style="text-align: center;">
+      <!-- 🦁 लायन्स लोगो इन्टिग्रेशन -->
+      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e3/Lions_Clubs_International_logo.svg" alt="Lions Logo" style="width: 80px; height: 80px; margin-bottom: 12px; object-fit: contain;">
+      
       <h1 style="font-size: 26px; font-weight: bold; margin: 0; color: #1a252f; font-family: 'Segoe UI', Arial, sans-serif;">Lions International</h1>
       <h2 style="font-size: 18px; color: #c0392b; margin: 5px 0; font-family: 'Segoe UI', Arial, sans-serif;">District 325 F</h2>
       <p style="font-size: 11px; color: #7f8c8d; font-style: italic; margin: 0;">Blood Donation Management System</p>
@@ -238,7 +242,7 @@
       <span id="pdfDate" style="color: #2c3e50;">Date: 2083-00-00</span>
     </div>
 
-    <!-- टेबल डाटा यहाँ बस्छ -->
+    <!-- टेबल डाटा प्रवाह हुने ठाउँ -->
     <div id="pdfTableContainer"></div>
 
     <div style="margin-top: 60px; text-align: right; font-size: 12px; font-family: 'Segoe UI', sans-serif; line-height: 1.6;">
@@ -277,8 +281,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<!-- html2pdf मुख्य मोड्युल लाइब्रेरी -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
@@ -609,7 +611,7 @@
     }
   }
 
-  // 📄 नयाँ अपग्रेड गरिएको १००% भिजुअल ब्ल्याङ्क-प्रुफ PDF जेनेरेटर
+  // 📄 परिमार्जित जुम-प्रुफ र लोगो सहितको शतप्रतिशत काम गर्ने PDF जेनेरेटर
   function generatePDFReport(reportType) {
     if(!globalDataCached) {
       Swal.fire("त्रुटि", "डाटा उपलब्ध छैन, कृपया पेज रिफ्रेस गर्नुहोस्।", "error");
@@ -619,7 +621,6 @@
     showLoading("डाटा म्यापिङ गरी PDF फाइल डाउनलोड हुँदैछ...");
 
     let subjectText = "";
-    // शुद्ध सेतो ब्याकग्राउन्ड र कालो बोर्डर भएको क्लिन HTML टेबल संरचना
     let tableHtml = `<table class="table table-bordered align-middle m-0" style="font-size:12px; width:100%; border:1px solid #dee2e6; color:#000000 !important; background:#ffffff !important;">`;
     let filename = "Report.pdf";
 
@@ -655,11 +656,6 @@
     document.getElementById('pdfAdminBadge').innerText = `Admin: ${currentUser || 'System Admin'}`;
     document.getElementById('pdfTableContainer').innerHTML = tableHtml;
 
-    // 🔥 ब्ल्याङ्क इलेमेन्ट फिक्स गर्न १ मिलिसेकेन्डका लागि यसलाई अन-स्क्रिन र १०००% भिजुअल बनाउने 
-    const wrapper = document.getElementById('pdfWrapper');
-    wrapper.style.opacity = "1";
-    wrapper.style.zIndex = "99999";
-
     const element = document.getElementById('pdfRenderArea');
     
     const opt = {
@@ -670,19 +666,16 @@
         scale: 2, 
         useCORS: true, 
         backgroundColor: '#ffffff',
-        logging: false
+        logging: false,
+        windowWidth: 794 // मोबाइलको भ्युपोर्टमा धक्का नपुगोस् भन्नका लागि फिक्स्ड चौडाइ
       },
       jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait' }
     };
 
-    // रेन्डर सकिएपछि फेरि लुकाउने र क्लोज गर्ने
+    // ब्याकग्राउन्डमै सफासँग स्क्रिनसट लिएर सिधै डाउनलोड गर्छ
     html2pdf().set(opt).from(element).save().then(() => {
-      wrapper.style.opacity = "0";
-      wrapper.style.zIndex = "-1";
       Swal.close();
     }).catch(err => {
-      wrapper.style.opacity = "0";
-      wrapper.style.zIndex = "-1";
       Swal.close();
       Swal.fire("त्रुटि", "PDF कन्भर्ट गर्दा समस्या आयो।", "error");
     });
