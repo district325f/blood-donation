@@ -996,13 +996,14 @@
     if (records.length === 0) {
       return `
         <tr>
-          <td colspan="5" class="empty-row">कुनै पनि डाटा उपलब्ध छैन</td>
+          <td colspan="6" class="empty-row">कुनै पनि डाटा उपलब्ध छैन</td>
         </tr>
       `;
     }
 
-    return records.map(r => `
+    return records.map((r, index) => `
       <tr>
+        <td class="center-cell">${index + 1}</td>
         <td>${escapeHtml(r.date)}</td>
         <td class="club-cell">${escapeHtml(r.clubs)}</td>
         <td>${escapeHtml(r.partner)}</td>
@@ -1063,14 +1064,16 @@
       return `
         <table class="report-table">
           <colgroup>
-            <col style="width:13%">
-            <col style="width:24%">
-            <col style="width:29%">
+            <col style="width:6%">
+            <col style="width:15%">
+            <col style="width:23%">
             <col style="width:25%">
+            <col style="width:22%">
             <col style="width:9%">
           </colgroup>
           <thead>
             <tr>
+              <th class="center-cell">सि.नं.</th>
               <th>मिति (Date)</th>
               <th>आयोजक क्लब(हरू)</th>
               <th>सहयोगी संस्था</th>
@@ -1196,12 +1199,34 @@
         background: #6c757d;
       }
 
+
+      @media (max-width: 600px) {
+        #reportPreviewOverlay {
+          padding: 8px;
+        }
+
+        #reportPreviewOverlay .preview-toolbar {
+          gap: 8px;
+          padding: 8px;
+        }
+
+        #reportPreviewOverlay .preview-toolbar button {
+          padding: 9px 12px;
+          font-size: 13px;
+        }
+
+        #printReportArea {
+          padding: 14px 12px 20px;
+        }
+      }
+
       #printReportArea {
         width: 100%;
-        max-width: 1120px;
+        max-width: 794px;
         margin: 0 auto;
-        padding: 18px 22px 24px;
+        padding: 18px 20px 24px;
         background: #ffffff;
+        box-shadow: 0 3px 16px rgba(0,0,0,0.12);
         color: #1f2933;
         font-family:
           "Noto Sans Devanagari",
@@ -1239,14 +1264,14 @@
 
       #printReportArea .heading h1 {
         margin: 0;
-        font-size: 28px;
+        font-size: 24px;
         font-weight: 700;
         color: #1a252f;
       }
 
       #printReportArea .heading h2 {
         margin: 3px 0 0;
-        font-size: 18px;
+        font-size: 16px;
         color: #c0392b;
       }
 
@@ -1282,7 +1307,7 @@
         width: 100%;
         border-collapse: collapse;
         table-layout: fixed;
-        font-size: 11px;
+        font-size: 10px;
       }
 
       #printReportArea .report-table thead {
@@ -1305,9 +1330,14 @@
       }
 
       #printReportArea .report-table th {
-        background: #eef1f4;
+        background: #e9edf2;
+        color: #1a252f;
         font-weight: 700;
         text-align: left;
+      }
+
+      #printReportArea .report-table tbody tr:nth-child(even) td {
+        background: #fafbfc;
       }
 
       #printReportArea .club-cell {
@@ -1340,8 +1370,8 @@
       }
 
       @page {
-        size: A4 landscape;
-        margin: 10mm 10mm 12mm;
+        size: A4 portrait;
+        margin: 10mm 9mm 12mm;
       }
 
       @media print {
@@ -1369,6 +1399,8 @@
           margin: 0 !important;
           padding: 0 !important;
           box-shadow: none !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
         }
 
         html, body {
