@@ -1453,11 +1453,11 @@
 
       <body>
         <div class="preview-toolbar">
-          <button type="button" onclick="window.print()">
+          <button type="button" id="printReportBtn">
             📄 PDF डाउनलोड / Print
           </button>
 
-          <button type="button" onclick="window.close()">
+          <button type="button" id="closeReportBtn">
             ✖ बन्द गर्नुहोस्
           </button>
         </div>
@@ -1510,8 +1510,62 @@
         </div>
 
         <script>
+          function runPrintReport() {
+            const printBtn = document.getElementById("printReportBtn");
+
+            if (printBtn) {
+              printBtn.disabled = true;
+              printBtn.textContent = "तयार हुँदैछ...";
+            }
+
+            setTimeout(function () {
+              try {
+                window.focus();
+
+                if (typeof window.print === "function") {
+                  window.print();
+                } else if (document.execCommand) {
+                  document.execCommand("print", false, null);
+                } else {
+                  alert("यो browser ले print सुविधा समर्थन गरेन। Chrome browser प्रयोग गर्नुहोस्।");
+                }
+              } catch (error) {
+                console.error("Print error:", error);
+                alert("Print खोल्न सकेन। Chrome browser मा पुनः प्रयास गर्नुहोस्।");
+              } finally {
+                setTimeout(function () {
+                  if (printBtn) {
+                    printBtn.disabled = false;
+                    printBtn.textContent = "📄 PDF डाउनलोड / Print";
+                  }
+                }, 1200);
+              }
+            }, 200);
+          }
+
           window.addEventListener("load", function () {
             window.scrollTo(0, 0);
+
+            const printBtn = document.getElementById("printReportBtn");
+            const closeBtn = document.getElementById("closeReportBtn");
+
+            if (printBtn) {
+              printBtn.addEventListener("click", runPrintReport, { passive: false });
+              printBtn.addEventListener("touchend", function (event) {
+                event.preventDefault();
+                runPrintReport();
+              }, { passive: false });
+            }
+
+            if (closeBtn) {
+              closeBtn.addEventListener("click", function () {
+                window.close();
+
+                setTimeout(function () {
+                  history.back();
+                }, 250);
+              });
+            }
           });
         <\/script>
       </body>
