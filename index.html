@@ -38,7 +38,7 @@
     .pdf-title-area {
       flex-grow: 1;
       text-align: center;
-      margin-right: 90px; /* लोगोको चौडाइ सँग ब्यालेन्स गर्न ताकि हेडिङ ठ्याक्कै सेन्टरमा परोस् */
+      margin-right: 90px;
     }
     .pdf-divider {
       border-top: 3px double #d32f2f;
@@ -52,7 +52,7 @@
   // 🔴 तपाईंको Google Apps Script URL
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbymO6Ws7EB9vmKzS3DdTArJ38pxt3S9O0P59RirY_DoI7fPMoVHA93XMaSS4-9hEoKK/exec";
   let currentUser = null;
-  let globalDataCached = null; // रिपोर्ट जेनेरेट गर्न डाटा सुरक्षित राख्न थपिएको
+  let globalDataCached = null;
 </script>
 
 <div class="container my-4">
@@ -98,7 +98,7 @@
   </div>
 
   <div class="section-card" id="formSection">
-    <h4 class="mb-4 text-danger border-bottom pb-2">📋 रक्तदान विवरण / आगामी कार्यक्रम दर्ता फारम</h4>
+    <h4 class="mb-4 text-danger border-bottom pb-2">📋 रक्तदान विवरण / आगामी कार्यक्रम दर्ता充ाम</h4>
     <form id="donationForm" onsubmit="handleFormSubmit(event)">
       <div class="row g-3">
         
@@ -166,7 +166,6 @@
   <div class="section-card hidden" id="adminPanel">
     <h4 class="mb-4 text-primary border-bottom pb-2">🛡️ व्यवस्थापकीय नियन्त्रण कक्ष (Admin Dashboard)</h4>
     
-    <!-- 📊 नयाँ थपिएको रिपोर्ट डाउनलोड केन्द्र सेक्सन -->
     <div class="card mb-4 bg-light border-primary">
       <div class="card-body">
         <h5 class="card-title text-primary fw-bold mb-3">📊 आधिकारिक रिपोर्ट डाउनलोड केन्द्र (PDF Reports)</h5>
@@ -260,9 +259,7 @@
 <div style="position: absolute; left: -9999px; top: -9999px;">
   <div id="pdfPrintTemplate">
     <div class="pdf-header">
-      <!-- देब्रेपट्टी लोगो बस्ने संरचना -->
       <img src="logo.png" class="pdf-logo" alt="Lions Logo">
-      <!-- मुख्य टेक्स्ट र हेडिङ सेन्टरमा बस्ने संरचना -->
       <div class="pdf-title-area">
         <h1 style="font-size: 26px; font-weight: bold; margin: 0; color: #1a252f;">Lions International</h1>
         <h2 style="font-size: 20px; font-weight: bold; margin: 5px 0; color: #c0392b;">District 325 F</h2>
@@ -287,7 +284,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- PDF जेनेरेट गर्न आवश्यक दुई मुख्य बाह्य लाइब्रेरीहरू -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -351,7 +347,7 @@
     })
     .then(res => res.json())
     .then(data => {
-      globalDataCached = data; // डाटालाई क्यास मेमोरीमा राख्ने (PDF बनाउन काम लाग्छ)
+      globalDataCached = data;
       const select = document.getElementById('clubsSelect');
       select.innerHTML = '';
       data.clubs.forEach(c => {
@@ -619,7 +615,7 @@
     }
   }
 
-  // 📄 ३ प्रकारका PDF रिपोर्टहरू जेनेरेट गर्ने नयाँ फङ्सन
+  // 📄 परिमार्जित र सुरक्षित PDF रिपोर्ट जेनेरेट फङ्सन (Multi-page Auto Pagination)
   function generatePDFReport(reportType) {
     if(!globalDataCached) {
       Swal.fire("त्रुटि", "डाटा उपलब्ध छैन, कृपया सिस्टम पुनः रिफ्रेस गर्नुहोस्।", "error");
@@ -629,10 +625,9 @@
     showLoading("पीडीएफ (PDF) रिपोर्ट तयार हुँदैछ...");
 
     let subjectText = "";
-    let tableHtml = `<table style="width:100%; border-collapse: collapse; margin-top:10px; font-size:13px;">`;
+    let tableHtml = `<table style="width:100%; border-collapse: collapse; margin-top:10px; font-size:13px; background-color: white;">`;
     let filename = "report.pdf";
 
-    // १. सम्पन्न भएका क्याम्पहरूको रिपोर्ट
     if(reportType === 'approved') {
       subjectText = "विषय: सम्पन्न भएका रक्तदान कार्यक्रमहरूको प्रतिवेदन (Donation Camps Report)";
       filename = "Approved_Camps_Report.pdf";
@@ -663,7 +658,6 @@
         });
       }
     } 
-    // २. क्याम्प नगर्ने क्लबहरूको रिपोर्ट
     else if(reportType === 'pending_clubs') {
       subjectText = "विषय: हालसम्म रक्तदान कार्यक्रम आयोजना नगर्ने क्लबहरूको विवरण";
       filename = "Non_Participating_Clubs_Report.pdf";
@@ -690,7 +684,6 @@
         });
       }
     } 
-    // ३. भविष्यमा आयोजना हुने क्याम्पहरूको रिपोर्ट
     else if(reportType === 'upcoming') {
       subjectText = "विषय: भविष्यमा आयोजना हुने आगामी रक्तदान कार्यक्रमहरूको प्रतिवेदन";
       filename = "Upcoming_Camps_Report.pdf";
@@ -722,31 +715,45 @@
 
     tableHtml += `</tbody></table>`;
 
-    // अदृश्य प्रिन्ट एरियामा डाटाहरू सेट गर्ने
     document.getElementById('pdfSubject').innerText = subjectText;
     document.getElementById('pdfTableContent').innerHTML = tableHtml;
     document.getElementById('pdfSignUser').innerText = `व्यवस्थापक: ${currentUser || 'सिस्टम एडमिन'}`;
     
-    // वर्तमान मिति रिपोर्टमा थप्ने
     let today = new Date();
     document.getElementById('pdfCurrentDate').innerText = `प्रतिवेदन मिति: ${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 
-    // html2canvas प्रयोग गरेर संरचनालाई स्क्यान गरी jsPDF बाट डाउनलोड गर्ने
+    // 🔴 मुख्य सुधार: html2canvas को लामो इमेजलाई बहु-पानामा काट्ने एल्गोरिदम
     setTimeout(() => {
       const { jsPDF } = window.jspdf;
       const element = document.getElementById('pdfPrintTemplate');
       
       html2canvas(element, {
-        scale: 2, // क्लियरिटी बढाउन डबल स्केल गरिएको
-        useCORS: true // लोगो इमेज लोड हुन मद्दत गर्छ
+        scale: 2, 
+        useCORS: true,
+        backgroundColor: "#ffffff"
       }).then(canvas => {
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('p', 'pt', 'a4');
-        const imgWidth = 595.28; // A4 चौडाइ
-        const pageHeight = 841.89; // A4 उचाइ
+        
+        const imgWidth = 595.28; // A4 Standard Width
+        const pageHeight = 841.89; // A4 Standard Height
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        // पहिलो पाना प्रिन्ट गर्ने
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        // यदि डाटा बाँकी छ भने स्वतः नयाँ पाना थप्दै सिफ्ट (Scroll Shift) गर्ने लुप
+        while (heightLeft > 0) {
+          position -= pageHeight; // अर्को पानाको उचाइ बराबर माथि सार्ने
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+        
         pdf.save(filename);
         Swal.close();
       }).catch(err => {
