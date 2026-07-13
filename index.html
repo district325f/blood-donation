@@ -1410,7 +1410,36 @@
             font-size: 9pt;
           }
 
+          .preview-toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f4f6f9;
+            border-bottom: 1px solid #d7dce1;
+          }
+
+          .preview-toolbar button {
+            border: 0;
+            border-radius: 7px;
+            padding: 10px 16px;
+            font-size: 10pt;
+            font-weight: 700;
+            cursor: pointer;
+            color: #ffffff;
+            background: #8b0000;
+          }
+
+          .preview-toolbar button:last-child {
+            background: #6c757d;
+          }
+
           @media print {
+            .preview-toolbar,
             .print-help {
               display: none !important;
             }
@@ -1423,6 +1452,16 @@
       </head>
 
       <body>
+        <div class="preview-toolbar">
+          <button type="button" onclick="window.print()">
+            📄 PDF डाउनलोड / Print
+          </button>
+
+          <button type="button" onclick="window.close()">
+            ✖ बन्द गर्नुहोस्
+          </button>
+        </div>
+
         <div class="print-help">
           Print विकल्प खुलेपछि <strong>Save as PDF</strong> छान्नुहोस्।
           Paper size: <strong>A4</strong>, Layout: <strong>Landscape</strong>,
@@ -1472,15 +1511,7 @@
 
         <script>
           window.addEventListener("load", function () {
-            setTimeout(function () {
-              window.print();
-            }, 500);
-          });
-
-          window.addEventListener("afterprint", function () {
-            setTimeout(function () {
-              window.close();
-            }, 300);
+            window.scrollTo(0, 0);
           });
         <\/script>
       </body>
