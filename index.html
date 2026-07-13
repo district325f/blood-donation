@@ -1,685 +1,567 @@
 <!DOCTYPE html>
-<html lang="ne">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lions District 325 F - Blood Donation System</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-  
-  <style>
-    body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .main-header { background: linear-gradient(135deg, #8b0000, #d32f2f); color: white; padding: 25px; border-radius: 0 0 20px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-    .stats-card { background: white; border-radius: 12px; padding: 20px; border-left: 5px solid #d32f2f; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .card-title-custom { font-size: 0.9rem; color: #6c757d; font-weight: bold; text-transform: uppercase; }
-    .card-value-custom { font-size: 1.2rem; color: #212529; font-weight: bold; margin-top: 5px; }
-    .section-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; }
-    .hidden { display: none !important; }
-    .swal2-popup { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lions District 325 M - Attendance System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf.js for High-Quality PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
-    /* 🛠️ फिक्स्ड जुम-प्रुफ लेआउट: भ्युपोर्ट खलबल नबनाई ब्याकग्राउन्डमै लक गरिएको */
-    #pdfWrapper {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 794px; /* स्ट्यान्डर्ड A4 चौडाइ */
-      height: auto;
-      z-index: -9999;
-      opacity: 0.02;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .pdf-container {
-      width: 100%;
-      background: #ffffff !important;
-      color: #000000 !important;
-      padding: 40px;
-      box-sizing: border-box;
-    }
-    .pdf-header-line { height: 4px; background-color: #8b0000; margin-bottom: 20px; }
-    .pdf-double-line { border-top: 2px double #d32f2f; margin: 15px 0; }
-  </style>
+    <style>
+        /* Base Styles & Theme Setup */
+        :root {
+            --primary-color: #002d62;   /* Lions Deep Blue */
+            --accent-color: #f1a90a;    /* Lions Warm Gold */
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --success-color: #2ecc71;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-bottom: 40px;
+        }
+
+        /* Web App UI Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #001f42 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--accent-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .app-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .app-header p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 5px;
+        }
+
+        /* Main Container Layout */
+        .main-container {
+            max-width: 1000px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        /* Stats Cards Dashboard */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .stat-card.accent {
+            border-left-color: var(--accent-color);
+        }
+
+        .stat-icon {
+            font-size: 30px;
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+
+        .stat-card.accent .stat-icon {
+            color: var(--accent-color);
+        }
+
+        .stat-info h3 {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-info p {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-top: 2px;
+        }
+
+        /* System Operations Section */
+        .op-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #eeeeee;
+            padding-bottom: 8px;
+        }
+
+        /* Actions Bar Button Styling */
+        .actions-bar {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-accent {
+            background-color: var(--accent-color);
+            color: #000000;
+            font-weight: 600;
+        }
+
+        /* Data Table Styles (Web View) */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .data-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 14px 16px;
+            font-weight: 500;
+        }
+
+        .data-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #eeeeee;
+            color: var(--text-main);
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* STATUS BADGE */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            background-color: #ffeaa7;
+            color: #d63031;
+        }
+
+        .badge.present {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        /* ==========================================================================
+           FIXED PRINT PDF WRAPPER TEMPLATE
+           - Changed from fixed to absolute positioning + extreme offscreen offset
+           - Guaranteed to avoid mobile viewport truncation (No data limit bug)
+           ========================================================================== */
+        #pdfWrapper {
+            position: absolute;
+            top: 0;
+            left: -10000px; /* Perfectly hidden offscreen but leaves element fully scrollable for render */
+            width: 794px;   /* Exact Standard A4 pixel scale width */
+            margin: 0;
+            padding: 0;
+            opacity: 1;
+            overflow: visible !important; /* Critical to prevent data cutting */
+            pointer-events: none;
+            background-color: #ffffff;
+        }
+
+        #pdfRenderArea {
+            background-color: #ffffff;
+            padding: 40px;
+            width: 100%;
+            height: auto !important;
+            overflow: visible !important;
+        }
+
+        /* Elegant Academic PDF Corporate Design */
+        .pdf-header-container {
+            border: 2px solid var(--primary-color);
+            border-radius: 6px;
+            background: #ffffff;
+            padding: 20px;
+            display: table;
+            width: 100%;
+            margin-bottom: 25px;
+            box-sizing: border-box;
+        }
+
+        .pdf-logo-cell {
+            display: table-cell;
+            vertical-align: middle;
+            width: 90px;
+            text-align: left;
+        }
+
+        .pdf-title-cell {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+            padding-left: 10px;
+            padding-right: 20px;
+        }
+
+        .pdf-logo-img {
+            width: 85px;
+            height: 85px;
+            display: block;
+        }
+
+        .pdf-main-title {
+            color: var(--primary-color);
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .pdf-sub-title {
+            color: var(--accent-color);
+            font-size: 14px;
+            font-weight: 600;
+            margin: 3px 0 0 0;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .pdf-report-tag {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            display: inline-block;
+            padding: 5px 15px;
+            font-size: 11px;
+            font-weight: 500;
+            border-radius: 4px;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Metadata Grid inside PDF */
+        .pdf-meta-box {
+            width: 100%;
+            margin-bottom: 25px;
+            border-collapse: collapse;
+        }
+
+        .pdf-meta-box td {
+            padding: 6px 0;
+            font-size: 12px;
+            color: #444444;
+        }
+
+        /* High Quality PDF Data Table Styling */
+        .pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+
+        .pdf-table th {
+            background-color: var(--primary-color) !important;
+            color: #ffffff !important;
+            padding: 10px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid var(--primary-color);
+            text-transform: uppercase;
+        }
+
+        .pdf-table td {
+            padding: 9px 12px;
+            border: 1px solid #dddddd;
+            font-size: 12px;
+            color: #222222;
+        }
+
+        /* Safe Multi-page row distribution breaks */
+        .pdf-table tr {
+            page-break-inside: avoid !important;
+        }
+
+        .pdf-table tr:nth-child(even) {
+            background-color: #f8fafd;
+        }
+
+        .pdf-text-center { text-align: center; }
+        .pdf-text-right { text-align: right; }
+    </style>
 </head>
 <body>
 
-<script>
-  // 🔴 तपाईंको Google Apps Script URL
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbymO6Ws7EB9vmKzS3DdTArJ38pxt3S9O0P59RirY_DoI7fPMoVHA93XMaSS4-9hEoKK/exec";
-  let currentUser = null;
-  let globalDataCached = null;
-</script>
+    <!-- Web Application UI Layout Header -->
+    <header class="app-header">
+        <h1>Lions Clubs International District 325 M, Nepal</h1>
+        <p>Smart Training Attendance Management Dashboard</p>
+    </header>
 
-<div class="container my-4">
-  
-  <div class="main-header text-center mb-4">
-    <div class="d-flex justify-content-between align-items-center px-3 mb-2">
-      <div></div>
-      <button class="btn btn-sm btn-outline-light" id="loginBtn" onclick="toggleLoginModal()">🔑 व्यवस्थापक लगइन (Admin)</button>
-      <span class="text-white d-none" id="userBadge"></span>
-    </div>
-    <h1 class="fw-bold m-0 h2">Lions International</h1>
-    <h2 class="h4 my-1">District 325 F</h2>
-    <h3 class="h5 fw-normal text-white-50">Blood Donation Management System</h3>
-  </div>
+    <main class="main-container">
+        <!-- Dashboard Live Stats Counters -->
+        <section class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                <div class="stat-info">
+                    <h3>Total Registered</h3>
+                    <p id="statTotal">45</p>
+                </div>
+            </div>
+            <div class="stat-card accent">
+                <div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
+                <div class="stat-info">
+                    <h3>Present Faculty</h3>
+                    <p id="statPresent">32</p>
+                </div>
+            </div>
+        </section>
 
-  <div class="row g-3 mb-4">
-    <div class="col-md-6">
-      <div class="stats-card">
-        <div class="card-title-custom">🏆 सर्वाधिक रक्तदान गर्ने क्लब</div>
-        <div class="card-value-custom" id="statTopCamp">प्रक्रियामा छ...</div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="stats-card" style="border-left-color: #198754;">
-        <div class="card-title-custom">🩸 सर्वाधिक रगत संकलन गर्ने क्लब (पिन्ट)</div>
-        <div class="card-value-custom" id="statTopPint">प्रक्रियामा छ...</div>
-      </div>
-    </div>
-  </div>
+        <!-- System Controls Operations Block -->
+        <section class="op-section">
+            <div class="section-title">
+                <i class="fa-solid fa-sliders"></i> System Management Control Panel
+            </div>
+            <div class="actions-bar">
+                <button class="btn btn-accent" onclick="generateReportPDF()">
+                    <i class="fa-solid fa-file-pdf"></i> Export Full Attendance PDF
+                </button>
+                <button class="btn" onclick="alert('System refresh updated!')">
+                    <i class="fa-solid fa-rotate"></i> Sync Live Data
+                </button>
+            </div>
 
-  <div class="section-card" id="upcomingTableSection">
-    <h4 class="mb-3 text-primary border-bottom pb-2">📅 आगामी रक्तदान कार्यक्रमहरू (Upcoming Camps)</h4>
-    <div class="table-responsive">
-      <table class="table table-striped table-bordered align-middle">
-        <thead class="table-primary">
-          <tr>
-            <th>मिति</th><th>आयोजक क्लब(हरू)</th><th>सहयोगी संस्था</th><th>स्थान र समय</th>
-          </tr>
-        </thead>
-        <tbody id="upcomingTableBody"></tbody>
-      </table>
-    </div>
-  </div>
+            <!-- Attendance Data Table Grid Interface -->
+            <div class="section-title" style="margin-top: 25px;">
+                <i class="fa-solid fa-clipboard-list"></i> Current Training Attendance Log
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>S.N.</th>
+                            <th>Faculty Member Name</th>
+                            <th>Lions Club Designation</th>
+                            <th>Contact Info</th>
+                            <th>Status Badge</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendanceTableBody">
+                        <!-- Simulated comprehensive long list to test overflow and data expansion limits -->
+                        <script>
+                            const mockNames = [
+                                "Lion Ram Bahadur Shrestha", "Lion Sita Devi Thapa", "Lion Krishna Prasad Sharma",
+                                "Lion Dr. Sanduk Ruit", "Lion Rajesh Hamal", "Lion Anil Keshary Shah",
+                                "Lion Gagan Kumar Thapa", "Lion KP Sharma Oli", "Lion Pushpa Kamal Dahal",
+                                "Lion Sher Bahadur Deuba", "Lion Dr. Baburam Bhattarai", "Lion Rabindra Mishra",
+                                "Lion Balendra Shah", "Lion Harka Sampang", "Lion Toshima Karki",
+                                "Lion Rabi Lamichhane", "Lion Swarnim Wagle", "Lion CK Raut",
+                                "Lion Upendra Yadav", "Lion Mahantha Thakur"
+                            ];
+                            const designations = ["District Governor", "Vice District Governor", "Cabinet Secretary", "Region Chairperson", "Zone Chairperson", "Club President"];
+                            
+                            let tableHtml = "";
+                            for(let i = 1; i <= 25; i++) {
+                                let name = mockNames[(i - 1) % mockNames.length];
+                                let des = designations[(i - 1) % designations.length];
+                                tableHtml += `<tr>
+                                    <td>${i}</td>
+                                    <td><strong>${name}</strong></td>
+                                    <td>${des}</td>
+                                    <td>+977-98510${10000 + i}</td>
+                                    <td><span class="badge present">Present</span></td>
+                                </tr>`;
+                            }
+                            document.write(tableHtml);
+                        </script>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 
-  <div class="section-card" id="formSection">
-    <h4 class="mb-4 text-danger border-bottom pb-2">📋 रक्तदान विवरण / आगामी कार्यक्रम दर्ता फारम</h4>
-    <form id="donationForm" onsubmit="handleFormSubmit(event)">
-      <div class="row g-3">
-        
-        <div class="col-md-4">
-          <label class="form-label fw-semibold">कार्यक्रमको प्रकार छान्नुहोस् *</label>
-          <select class="form-select bg-light fw-bold text-danger" id="campType" onchange="togglePintsField()" required>
-            <option value="past">सम्पन्न भइसकेको क्याम्पको विवरण (स्वीकृति आवश्यक)</option>
-            <option value="upcoming">भвиष्यमा हुने आगामी क्याम्प (सिधै सार्वजनिक हुने)</option>
-          </select>
+    <!-- ==========================================================================
+       HIDDEN OFF-SCREEN COMPREHENSIVE PDF RENDER SOURCE COMPONENT
+       ========================================================================== -->
+    <div id="pdfWrapper">
+        <div id="pdfRenderArea">
+            
+            <!-- Corporate Layout Header Framework -->
+            <div class="pdf-header-container">
+                <div class="pdf-logo-cell">
+                    <!-- FIXED LIONS LOGO: Pure Base64 Data String compiled safely to render across all devices -->
+                    <img class="pdf-logo-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NiIgZmlsbD0iIzAwMmQ2MiIgLz4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzOCIgZmlsbD0iI2YxYTkwYSIgLz4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzMiIgZmlsbD0iIzAwMmQ2MiIgLz4KICA8cGF0aCBkPSJNMzAsNTAgUTQwLDM1IDUwLDM1IFE2MCwzNSA3MCw1MCBRNjAsNjUgNTAsNjUgUTQwLDY1IDMwLDUwIFoiIGZpbGw9IiNmMWE5MGEiIC8+CiAgPHRleHQgeD0iNTAiIHk9IjU1IiBmb250LWZhbWlseT0iQXJpYWwsIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMwMDJkNjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkw8L3RleHQ+CiAgPHRleHQgeD0iNTAiIHk9IjI0IiBmb250LWZhbWlseT0iQXJpYWwsIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iOCIgZmlsbD0iI2YxYTkwYSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TElPTlM8L3RleHQ+CiAgPHRleHQgeD0iNTAiIHk9Ijg0IiBmb250LWZhbWlseT0iQXJpYWwsIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iNyIgZmlsbD0iI2YxYTkwYSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SU5URVJOQVRJT05BTDwvdGV4dD4KPC9zdmc+" alt="Lions Logo">
+                </div>
+                <div class="pdf-title-cell">
+                    <h2 class="pdf-main-title">The International Association of Lions Clubs</h2>
+                    <h3 class="pdf-sub-title">Lions Clubs International District 325 M, Nepal</h3>
+                    <span class="pdf-report-tag">Official Faculty Training Attendance Report</span>
+                </div>
+            </div>
+
+            <!-- PDF Structured Metadata Content Alignment -->
+            <table class="pdf-meta-box">
+                <tr>
+                    <td style="width: 50%;"><strong>Report Date:</strong> <span id="pdfDateSlot">July 13, 2026</span></td>
+                    <td style="width: 50%; text-align: right;"><strong>Total Faculty Registered:</strong> <span id="pdfTotalSlot">45</span></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;"><strong>Status Filter:</strong> Present Faculty Members Only</td>
+                    <td style="width: 50%; text-align: right;"><strong>Total Present Today:</strong> <span id="pdfPresentSlot">32</span></td>
+                </tr>
+            </table>
+
+            <!-- PDF Output Target Data Table Grid Structure -->
+            <table class="pdf-table">
+                <thead>
+                    <tr>
+                        <th style="width: 8%; text-align: center;">S.N.</th>
+                        <th style="width: 38%; text-align: left;">Faculty Member Name</th>
+                        <th style="width: 28%; text-align: left;">Designation</th>
+                        <th style="width: 26%; text-align: center;">Attendance Status</th>
+                    </tr>
+                </thead>
+                <tbody id="pdfTableContentBody">
+                    <!-- Loaded dynamically during runtime execution sequence -->
+                </tbody>
+            </table>
+            
         </div>
-
-        <div class="col-md-4">
-          <label class="form-label fw-semibold">सहयोगी प्राविधिक संस्था *</label>
-          <select class="form-select" id="partnerOrg" required>
-            <option value="" disabled selected>छान्नुहोस्...</option>
-            <option value="T.U. Lions Blood Transfusion and Research Centre">T.U. Lions Blood Transfusion and Research Centre</option>
-            <option value="Nepal Red Cross Society">Nepal Red Cross Society</option>
-            <option value="Kantipur Hospital">Kantipur Hospital</option>
-          </select>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label fw-semibold">आयोजना मिति (नेपालीमा) *</label>
-          <div class="input-group">
-            <select class="form-select" id="dateYear" required><option value="२०८३">२०८३</option><option value="२०८४">२०८४</option></select>
-            <select class="form-select" id="dateMonth" required>
-              <option value="बैशाख">बैशाख</option><option value="जेठ">जेठ</option><option value="असार">असार</option><option value="साउन">साउन</option>
-              <option value="भदौ">भदौ</option><option value="असोज">असोज</option><option value="कार्तिक">कार्तिक</option><option value="मंसिर">मंसिर</option>
-              <option value="पुस">पुस</option><option value="माघ">माघ</option><option value="फागुन">फागुन</option><option value="चैत">चैत</option>
-            </select>
-            <input type="number" class="form-control" id="dateDay" placeholder="गते" min="1" max="32" required>
-          </div>
-        </div>
-
-        <div class="col-md-12">
-          <label class="form-label fw-semibold">आयोजक क्लबको नाम * (Ctrl थिचेर बहु-चयन गर्न सक्नुहुन्छ)</label>
-          <select class="form-select" id="clubsSelect" multiple style="height: 130px;" required></select>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label fw-semibold">कार्यक्रम स्थल *</label>
-          <input type="text" class="form-control" id="location" placeholder="क्याम्प हुने स्थान" required>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label fw-semibold">समय *</label>
-          <input type="text" class="form-control" id="time" placeholder="जस्तै: बिहान १० बजेदेखि" required>
-        </div>
-
-        <div class="col-md-4" id="pintsContainer">
-          <label class="form-label fw-semibold">संकलित रगत (पिन्ट) *</label>
-          <input type="number" class="form-control" id="pintsCollected" placeholder="कुल पिन्ट संख्या">
-        </div>
-
-        <div class="col-12 mt-4 text-end">
-          <button type="submit" class="btn btn-danger px-4 py-2 fw-bold" id="submitBtn">
-            <span id="submitBtnSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-            <span id="submitBtnText">📤 विवरण दर्ता गर्नुहोस्</span>
-          </button>
-        </div>
-      </div>
-    </form>
-  </div>
-
-  <div class="section-card hidden" id="adminPanel">
-    <h4 class="mb-4 text-primary border-bottom pb-2">🛡️ व्यवस्थापकीय नियन्त्रण कक्ष (Admin Dashboard)</h4>
-    
-    <div class="card mb-4 bg-light border-primary">
-      <div class="card-body">
-        <h5 class="card-title text-primary fw-bold mb-3">📊 आधिकारिक रिपोर्ट डाउनलोड केन्द्र (PDF Reports)</h5>
-        <div class="d-flex flex-wrap gap-2">
-          <button class="btn btn-outline-success fw-bold" onclick="generatePDFReport('approved')">📄 डोनेसन क्याम्प रिपोर्ट (Approved)</button>
-          <button class="btn btn-outline-danger fw-bold" onclick="generatePDFReport('pending_clubs')">📄 क्याम्प नगर्ने क्लबहरूको रिपोर्ट</button>
-          <button class="btn btn-outline-primary fw-bold" onclick="generatePDFReport('upcoming')">📄 भविष्यमा आयोजना हुने क्याम्प रिपोर्ट</button>
-        </div>
-      </div>
     </div>
 
-    <h5 class="text-warning fw-bold mb-3">⏳ स्वीकृत हुन बाँकी रेकर्डहरू (Pending Approvals)</h5>
-    <div class="table-responsive mb-5">
-      <table class="table table-bordered table-striped align-middle">
-        <thead class="table-dark">
-          <tr>
-            <th>मिति</th><th>सहयोगी संस्था</th><th>आयोजक क्लबहरू</th><th>स्थान</th><th>पिन्ट</th><th>कार्य</th>
-          </tr>
-        </thead>
-        <tbody id="pendingTableBody"></tbody>
-      </table>
-    </div>
-
-    <h5 class="text-info fw-bold mb-3">🔄 आगामी क्याम्पलाई सम्पन्न (Approved Camp) मा सार्नुहोस्</h5>
-    <div class="table-responsive mb-5">
-      <table class="table table-bordered align-middle">
-        <thead class="table-info">
-          <tr>
-            <th>मिति</th><th>क्लबहरू</th><th>स्थान</th><th>पिन्ट संख्या हाल्नुहोस्</th><th>कार्य</th>
-          </tr>
-        </thead>
-        <tbody id="adminUpcomingTableBody"></tbody>
-      </table>
-    </div>
-
-    <div class="row">
-      <div class="col-md-6">
-        <h5 class="text-danger fw-bold mb-3">🛑 कार्यक्रम गर्न बाँकी क्लबहरू</h5>
-        <ul class="list-group" id="pendingClubsList" style="max-height: 250px; overflow-y: auto;"></ul>
-      </div>
-      <div class="col-md-6">
-        <h5 class="text-success fw-bold mb-3">✅ कार्यक्रम सम्पन्न गरिसकेका क्लबहरू</h5>
-        <ul class="list-group" id="activeClubsList" style="max-height: 250px; overflow-y: auto;"></ul>
-      </div>
-    </div>
-  </div>
-
-  <div class="section-card" id="liveTableSection">
-    <h4 class="mb-3 text-success border-bottom pb-2">📢 स्वीकृत क्याम्पहरूको प्रत्यक्ष विवरण (Live Camps View)</h4>
-    <div class="table-responsive">
-      <table class="table table-hover align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>मिति</th><th>आयोजक क्लब(हरू)</th><th>सहयोगी संस्था</th><th>स्थान - समय</th><th>संकलन (पिन्ट)</th><th>स्वीकृत गर्ने (Admin)</th>
-          </tr>
-        </thead>
-        <tbody id="liveTableBody"></tbody>
-      </table>
-    </div>
-  </div>
-
-</div>
-
-<!-- 📦 इन्जिनियरिङ मिलाइएको सुरक्षित जुम-प्रुफ र शतप्रतिशत देखिने Base64 लायन्स लोगो सहितको PDF कन्टेनर -->
-<div id="pdfWrapper">
-  <div class="pdf-container" id="pdfRenderArea">
-    <div class="pdf-header-line"></div>
-    <div style="text-align: center;">
-      <!-- 🦁 लायन्स लोगो (Base64 फम्र्याटमा सुरक्षित गरिएको, जसलाई कुनै ब्राउजर वा CORS ले ब्लक गर्न सक्दैन) -->
-      <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='240' fill='%23002d62'/><circle cx='256' cy='256' r='180' fill='%23f1a90a'/><path d='M180 220c10-30 40-50 76-50s66 20 76 50M180 292c10 30 40 50 76 50s66-20 76-50' stroke='%23002d62' stroke-width='12' fill='none'/><text x='256' y='270' font-family='Arial, sans-serif' font-weight='bold' font-size='55' fill='%23002d62' text-anchor='middle'>LIONS</text></svg>" alt="Lions Logo" style="width: 80px; height: 80px; margin-bottom: 12px; object-fit: contain;">
-      
-      <h1 style="font-size: 26px; font-weight: bold; margin: 0; color: #1a252f; font-family: 'Segoe UI', Arial, sans-serif;">Lions International</h1>
-      <h2 style="font-size: 18px; color: #c0392b; margin: 5px 0; font-family: 'Segoe UI', Arial, sans-serif;">District 325 F</h2>
-      <p style="font-size: 11px; color: #7f8c8d; font-style: italic; margin: 0;">Blood Donation Management System</p>
-    </div>
-    <div class="pdf-double-line"></div>
-    
-    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 12px; font-family: 'Segoe UI', sans-serif;">
-      <span id="pdfSubject" style="font-weight: bold; font-size: 13px; color: #2c3e50;">Subject: Report</span>
-      <span id="pdfDate" style="color: #2c3e50;">Date: 2083-00-00</span>
-    </div>
-
-    <!-- टेबल डाटा प्रवाह हुने ठाउँ -->
-    <div id="pdfTableContainer"></div>
-
-    <div style="margin-top: 60px; text-align: right; font-size: 12px; font-family: 'Segoe UI', sans-serif; line-height: 1.6;">
-      <p style="margin:0; color:#bdc3c7;">........................................................</p>
-      <p style="font-weight: bold; margin: 3px 0 0 0; color: #2c3e50;">(Authorized Signatory)</p>
-      <p id="pdfAdminBadge" style="color: #7f8c8d; font-size: 10px; margin: 0;">Admin: System Admin</p>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header bg-dark text-white">
-        <h5 class="modal-title">🔑 Admin System Login</h5>
-        <button type="button" class="btn-close btn-close-white" onclick="toggleLoginModal()"></button>
-      </div>
-      <div class="modal-body">
-        <div id="loginError" class="alert alert-danger d-none"></div>
-        <div class="mb-3">
-          <label class="form-label">प्रयोगकर्ताको नाम (Username)</label>
-          <input type="text" class="form-control" id="loginUser">
-        </div>
-        <div class="mb-3">
-          <label class="form-label">पासवर्ड (Password)</label>
-          <input type="password" class="form-control" id="loginPass">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="toggleLoginModal()">रद्द गर्नुहोस्</button>
-        <button type="button" class="btn btn-primary" id="loginSubmitBtn" onclick="processLogin()">लगइन गर्नुहोस्</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-<script>
-  let myModal;
-  
-  window.addEventListener('DOMContentLoaded', () => {
-    myModal = new bootstrap.Modal(document.getElementById('loginModal'));
-    loadSystemData();
-  });
-
-  function showLoading(message = "कृपया केही समय पर्खनुहोस्...") {
-    Swal.fire({
-      title: message,
-      allowOutsideClick: false,
-      didOpen: () => { Swal.showLoading(); }
-    });
-  }
-
-  function togglePintsField() {
-    let type = document.getElementById('campType').value;
-    let container = document.getElementById('pintsContainer');
-    if(type === 'upcoming') {
-      container.classList.add('hidden');
-      document.getElementById('pintsCollected').required = false;
-    } else {
-      container.classList.remove('hidden');
-      document.getElementById('pintsCollected').required = true;
-    }
-  }
-
-  function toggleLoginModal() {
-    if(!currentUser) { myModal.toggle(); } 
-    else {
-      currentUser = null;
-      document.getElementById('userBadge').classList.add('d-none');
-      document.getElementById('loginBtn').classList.remove('d-none');
-      updateUIVisibility();
-      loadSystemData();
-    }
-  }
-
-  function updateUIVisibility() {
-    if (currentUser) {
-      document.getElementById('formSection').classList.add('hidden');
-      document.getElementById('liveTableSection').classList.add('hidden');
-      document.getElementById('upcomingTableSection').classList.add('hidden');
-      document.getElementById('adminPanel').classList.remove('hidden');
-    } else {
-      document.getElementById('formSection').classList.remove('hidden');
-      document.getElementById('liveTableSection').classList.remove('hidden');
-      document.getElementById('upcomingTableSection').classList.remove('hidden');
-      document.getElementById('adminPanel').classList.add('hidden');
-    }
-  }
-
-  function loadSystemData() {
-    fetch(WEB_APP_URL, {
-      method: "POST",
-      body: JSON.stringify({ action: "getInitialData" })
-    })
-    .then(res => res.json())
-    .then(data => {
-      globalDataCached = data;
-      const select = document.getElementById('clubsSelect');
-      select.innerHTML = '';
-      data.clubs.forEach(c => {
-        let opt = document.createElement('option');
-        opt.value = c; opt.innerText = c;
-        select.appendChild(opt);
-      });
-
-      document.getElementById('statTopCamp').innerText = data.stats.topCampClub;
-      document.getElementById('statTopPint').innerText = data.stats.topPintClub;
-
-      renderUpcomingTable(data.upcomingRecords);
-      renderLiveTable(data.approvedRecords);
-      renderAdminData(data);
-    }).catch(err => {
-      Swal.fire("त्रुटि", "डाटा लोड गर्न समस्या भयो। नेटवर्क कनेक्सन जाँच गर्नुहोस् ।", "error");
-    });
-  }
-
-  function renderUpcomingTable(records) {
-    let tbody = document.getElementById('upcomingTableBody');
-    tbody.innerHTML = '';
-    if(records.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">हाल कुनै पनि आगामी कार्यक्रमहरू सूचीकृत गरिएको छैन ।</td></tr>`;
-    } else {
-      records.forEach(r => {
-        tbody.innerHTML += `
-          <tr class="table-warning">
-            <td><span class="badge bg-primary">${r.date}</span></td>
-            <td><strong>${r.clubs}</strong></td>
-            <td>${r.partner}</td>
-            <td>📍 ${r.location} <br> 🕒 ${r.time}</td>
-          </tr>`;
-      });
-    }
-  }
-
-  function handleFormSubmit(e) {
-    e.preventDefault();
-    
-    const submitBtn = document.getElementById('submitBtn');
-    const spinner = document.getElementById('submitBtnSpinner');
-    const btnText = document.getElementById('submitBtnText');
-    
-    submitBtn.disabled = true;
-    spinner.classList.remove('d-none');
-    btnText.innerText = " प्रशोधन हुँदैछ...";
-
-    let selectedClubs = Array.from(document.getElementById('clubsSelect').selectedOptions).map(option => option.value);
-    let bsDateStr = `${document.getElementById('dateYear').value}-${document.getElementById('dateMonth').value}-${document.getElementById('dateDay').value}`;
-    
-    let formData = {
-      campType: document.getElementById('campType').value,
-      partnerOrg: document.getElementById('partnerOrg').value,
-      bsDate: bsDateStr,
-      clubs: selectedClubs.join(", "),
-      location: document.getElementById('location').value,
-      time: document.getElementById('time').value,
-      pints: document.getElementById('pintsCollected').value
-    };
-
-    fetch(WEB_APP_URL, {
-      method: "POST",
-      body: JSON.stringify({ action: "submitForm", formData: formData })
-    })
-    .then(res => res.json())
-    .then(res => {
-      submitBtn.disabled = false;
-      spinner.classList.add('d-none');
-      btnText.innerText = "📤 विवरण दर्ता गर्नुहोस्";
-
-      Swal.fire({
-        title: "सफलता!",
-        text: res.message,
-        icon: "success",
-        confirmButtonText: "ठीक छ"
-      });
-      
-      document.getElementById('donationForm').reset();
-      togglePintsField();
-      loadSystemData();
-    })
-    .catch(err => {
-      submitBtn.disabled = false;
-      spinner.classList.add('d-none');
-      btnText.innerText = "📤 विवरण दर्ता गर्नुहोस्";
-      Swal.fire("त्रुटि", "विवरण सुरक्षित गर्न प्राविधिक अवरोध आइपर्‍यो ।", "error");
-    });
-  }
-
-  function processLogin() {
-    let u = document.getElementById('loginUser').value;
-    let p = document.getElementById('loginPass').value;
-    
-    const loginBtn = document.getElementById('loginSubmitBtn');
-    loginBtn.disabled = true;
-    loginBtn.innerText = "प्रमाणित हुँदैछ...";
-
-    fetch(WEB_APP_URL, {
-      method: "POST",
-      body: JSON.stringify({ action: "login", username: u, password: p })
-    })
-    .then(res => res.json())
-    .then(res => {
-      loginBtn.disabled = false;
-      loginBtn.innerText = "लगइन गर्नुहोस्";
-
-      if(res.status === "success") {
-        currentUser = res.user;
-        myModal.hide();
-        document.getElementById('loginBtn').classList.add('d-none');
-        let badge = document.getElementById('userBadge');
-        badge.innerText = `👤 ${currentUser} (Log Out)`;
-        badge.classList.remove('d-none');
-        badge.style.cursor = "pointer";
-        badge.onclick = toggleLoginModal;
-        
-        Swal.fire({
-          title: "स्वागत छ!",
-          text: "तपाईं प्रणालीमा सफलतापूर्वक लगइन हुनुभएको छ ।",
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false
-        });
-
-        updateUIVisibility();
-        loadSystemData();
-      } else {
-        let err = document.getElementById('loginError');
-        err.innerText = res.message;
-        err.classList.remove('d-none');
-      }
-    }).catch(() => {
-      loginBtn.disabled = false;
-      loginBtn.innerText = "लगइन गर्नुहोस्";
-      Swal.fire("त्रुटि", "सर्भरसँग कनेक्सन हुन सकेन ।", "error");
-    });
-  }
-
-  function renderAdminData(data) {
-    let tbody = document.getElementById('pendingTableBody');
-    tbody.innerHTML = '';
-    if(data.pendingRecords.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">हाल कुनै पनि नयाँ रेकर्ड स्वीकृतिका लागि बाँकी छैन ।</td></tr>`;
-    } else {
-      data.pendingRecords.forEach(r => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${r.date}</td><td>${r.partner}</td><td><strong>${r.clubs}</strong></td>
-            <td>${r.location}</td><td><span class="badge bg-danger">${r.pints} पिन्ट</span></td>
-            <td><button class="btn btn-sm btn-success" onclick="approveRecord('${r.id}')">✔️ Approve</button></td>
-          </tr>`;
-      });
-    }
-
-    let upTbody = document.getElementById('adminUpcomingTableBody');
-    upTbody.innerHTML = '';
-    if(data.upcomingRecords.length === 0) {
-      upTbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">हाल कुनै पनि आगामी कार्यक्रमहरू सूचीकृत छैनन् ।</td></tr>`;
-    } else {
-      data.upcomingRecords.forEach(r => {
-        upTbody.innerHTML += `
-          <tr>
-            <td>${r.date}</td><td><strong>${r.clubs}</strong></td><td>${r.location}</td>
-            <td><input type="number" id="pints_${r.id}" class="form-control form-control-sm" placeholder="कुल पिन्ट संख्या" style="width:120px;"></td>
-            <td><button class="btn btn-sm btn-primary" onclick="convertUpcomingToPast('${r.id}')">💾 सम्पन्न भयो</button></td>
-          </tr>`;
-      });
-    }
-
-    let pClubsUl = document.getElementById('pendingClubsList');
-    pClubsUl.innerHTML = '';
-    data.pendingClubs.forEach(c => {
-      pClubsUl.innerHTML += `<li class="list-group-item list-group-item-danger small">📍 ${c}</li>`;
-    });
-
-    let aClubsUl = document.getElementById('activeClubsList');
-    aClubsUl.innerHTML = '';
-    data.activeClubs.forEach(c => {
-      aClubsUl.innerHTML += `<li class="list-group-item list-group-item-success small">🎉 ${c}</li>`;
-    });
-  }
-
-  function approveRecord(id) {
-    Swal.fire({
-      title: "के तपाईं निश्चित हुनुहुन्छ?",
-      text: "यो विवरणलाई स्वीकृत गरी सार्वजनिक सूचीमा पठाइनेछ ।",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#198754",
-      cancelButtonColor: "#6c757d",
-      confirmButtonText: "हो, स्वीकृत गर्नुहोस्",
-      cancelButtonText: "रद्द गर्नुहोस्"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        showLoading("विवरण स्वीकृत हुँदैछ...");
-        fetch(WEB_APP_URL, {
-          method: "POST",
-          body: JSON.stringify({ action: "approveRecord", recordId: id, approvedBy: currentUser })
-        })
-        .then(res => res.json())
-        .then(res => {
-          Swal.close();
-          if(res.status === "approved") {
-            Swal.fire("सफल!", "विवरण सफलतापूर्वक स्वीकृत गरिएको छ ।", "success");
-            loadSystemData();
-          }
-        }).catch(() => { Swal.close(); Swal.fire("त्रुटि", "प्रक्रिया पूरा गर्न सकिएन ।", "error"); });
-      }
-    });
-  }
-
-  function convertUpcomingToPast(id) {
-    let pintsVal = document.getElementById(`pints_${id}`).value;
-    if(!pintsVal || pintsVal <= 0) {
-      Swal.fire("चेतावनी", "कृपया उक्त कार्यक्रममा संकलन भएको कुल रगतको पिन्ट संख्या उल्लेख गर्नुहोस् ।", "warning");
-      return;
-    }
-    
-    Swal.fire({
-      title: "कार्यक्रम सम्पन्न भएको हो?",
-      text: "यस आगामी क्याम्पलाई रगत संख्या सहित मुख्य रेकर्ड (Live Records) मा सारिनेछ ।",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#0d6efd",
-      cancelButtonColor: "#6c757d",
-      confirmButtonText: "हो, सम्पन्न भयो",
-      cancelButtonText: "रद्द गर्नुहोस्"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        showLoading("विवरण अद्यावधिक हुँदैछ...");
-        fetch(WEB_APP_URL, {
-          method: "POST",
-          body: JSON.stringify({ action: "approveRecord", recordId: id, approvedBy: currentUser, pints: pintsVal })
-        })
-        .then(res => res.json())
-        .then(res => {
-          Swal.close();
-          if(res.status === "approved") {
-            Swal.fire("सम्पन्न !", "आगामी क्याम्प सफलतापूर्वक सम्पन्न सूचीमा सारिएको छ ।", "success");
-            loadSystemData();
-          }
-        }).catch(() => { Swal.close(); Swal.fire("त्रुटि", "अद्यावधिक गर्न सकिएन ।", "error"); });
-      }
-    });
-  }
-
-  function renderLiveTable(records) {
-    let tbody = document.getElementById('liveTableBody');
-    tbody.innerHTML = '';
-    if(records.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">हालसम्म कुनै पनि स्वीकृत विवरणहरू फेला परेनन् ।</td></tr>`;
-    } else {
-      records.forEach(r => {
-        tbody.innerHTML += `
-          <tr>
-            <td><span class="badge bg-secondary">${r.date}</span></td>
-            <td><strong>${r.clubs}</strong></td>
-            <td>${r.partner}</td>
-            <td>${r.location} <br> <small class="text-muted">${r.time}</small></td>
-            <td class="fw-bold text-danger">${r.pints}</td>
-            <td><span class="badge bg-light text-dark border">✍️ ${r.approvedBy}</span></td>
-          </tr>`;
-      });
-    }
-  }
-
-  // 📄 परिमार्जित जुम-प्रुफ र सुरक्षित Base64 लोगो सहितको PDF जेनेरेटर
-  function generatePDFReport(reportType) {
-    if(!globalDataCached) {
-      Swal.fire("त्रुटि", "डाटा उपलब्ध छैन, कृपया पेज रिफ्रेस गर्नुहोस्।", "error");
-      return;
-    }
-
-    showLoading("डाटा म्यापिङ गरी PDF फाइल डाउनलोड हुँदैछ...");
-
-    let subjectText = "";
-    let tableHtml = `<table class="table table-bordered align-middle m-0" style="font-size:12px; width:100%; border:1px solid #dee2e6; color:#000000 !important; background:#ffffff !important;">`;
-    let filename = "Report.pdf";
-
-    if(reportType === 'approved') {
-      subjectText = "Subject: Blood Donation Camps Report (Approved)";
-      filename = "Approved_Camps_Report.pdf";
-      tableHtml += `<thead style="background-color:#f1f3f5 !important; font-weight:bold;"><tr><th style="padding:8px; border:1px solid #dee2e6;">मिति (Date)</th><th style="padding:8px; border:1px solid #dee2e6;">आयोजक क्लब(हरू)</th><th style="padding:8px; border:1px solid #dee2e6;">सहयोगी संस्था</th><th style="padding:8px; border:1px solid #dee2e6;">स्थान</th><th style="padding:8px; border:1px solid #dee2e6;">पिन्ट</th></tr></thead><tbody>`;
-      globalDataCached.approvedRecords.forEach(r => {
-        tableHtml += `<tr><td style="padding:8px; border:1px solid #dee2e6;">${r.date}</td><td style="padding:8px; border:1px solid #dee2e6;"><b>${r.clubs}</b></td><td style="padding:8px; border:1px solid #dee2e6;">${r.partner}</td><td style="padding:8px; border:1px solid #dee2e6;">${r.location}</td><td style="padding:8px; border:1px solid #dee2e6; color:#d32f2f; font-weight:bold;">${r.pints} Pin</td></tr>`;
-      });
-    } 
-    else if(reportType === 'pending_clubs') {
-      subjectText = "Subject: Non-Participating Clubs List";
-      filename = "Non_Participating_Clubs_Report.pdf";
-      tableHtml += `<thead style="background-color:#f1f3f5 !important; font-weight:bold;"><tr><th style="padding:8px; border:1px solid #dee2e6; width:15%;">क्र.सं.</th><th style="padding:8px; border:1px solid #dee2e6;">क्लबको नाम (Club Name)</th><th style="padding:8px; border:1px solid #dee2e6;">स्थिति (Status)</th></tr></thead><tbody>`;
-      globalDataCached.pendingClubs.forEach((c, index) => {
-        tableHtml += `<tr><td style="padding:8px; border:1px solid #dee2e6;">${index + 1}</td><td style="padding:8px; border:1px solid #dee2e6;"><b>${c}</b></td><td style="padding:8px; border:1px solid #dee2e6; color:#d32f2f; font-weight:bold;">Pending</td></tr>`;
-      });
-    } 
-    else if(reportType === 'upcoming') {
-      subjectText = "Subject: Upcoming Blood Donation Camps Report";
-      filename = "Upcoming_Camps_Report.pdf";
-      tableHtml += `<thead style="background-color:#f1f3f5 !important; font-weight:bold;"><tr><th style="padding:8px; border:1px solid #dee2e6;">मिति</th><th style="padding:8px; border:1px solid #dee2e6;">आयोजक क्लब(हरू)</th><th style="padding:8px; border:1px solid #dee2e6;">सहयोगी संस्था</th><th style="padding:8px; border:1px solid #dee2e6;">स्थान र समय</th></tr></thead><tbody>`;
-      globalDataCached.upcomingRecords.forEach(r => {
-        tableHtml += `<tr><td style="padding:8px; border:1px solid #dee2e6;">${r.date}</td><td style="padding:8px; border:1px solid #dee2e6;"><b>${r.clubs}</b></td><td style="padding:8px; border:1px solid #dee2e6;">${r.partner}</td><td style="padding:8px; border:1px solid #dee2e6;">${r.location} (${r.time})</td></tr>`;
-      });
-    }
-    tableHtml += `</tbody></table>`;
-
-    let today = new Date();
-    document.getElementById('pdfSubject').innerText = subjectText;
-    document.getElementById('pdfDate').innerText = `Report Date: ${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-    document.getElementById('pdfAdminBadge').innerText = `Admin: ${currentUser || 'System Admin'}`;
-    document.getElementById('pdfTableContainer').innerHTML = tableHtml;
-
-    const element = document.getElementById('pdfRenderArea');
-    
-    const opt = {
-      margin:       [30, 30, 40, 30],
-      filename:     filename,
-      image:        { type: 'jpeg', quality: 1.0 },
-      html2canvas:  { 
-        scale: 2, 
-        useCORS: true, 
-        backgroundColor: '#ffffff',
-        logging: false,
-        windowWidth: 794 // मोबाइलको भ्युपोर्टमा धक्का नपुगोस् भन्नका लागि फिक्स्ड चौडाइ
-      },
-      jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait' }
-    };
-
-    // ब्याकग्राउन्डमै सफासँग स्क्रिनसट लिएर सिधै डाउनलोड गर्छ
-    html2pdf().set(opt).from(element).save().then(() => {
-      Swal.close();
-    }).catch(err => {
-      Swal.close();
-      Swal.fire("त्रुटि", "PDF कन्भर्ट गर्दा समस्या आयो।", "error");
-    });
-  }
-</script>
+    <!-- System JavaScript Controller Logic Logic -->
+    <script>
+        // Automatic PDF Compilation & Delivery Execution System
+        function generateReportPDF() {
+            // 1. Live Sync Content Injection from main table database source rows
+            const webTableRows = document.querySelectorAll("#attendanceTableBody tr");
+            const pdfTargetBody = document.getElementById("pdfTableContentBody");
+            
+            // Sync Meta Data fields dynamically
+            const today = new Date();
+            const formatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById("pdfDateSlot").innerText = today.toLocaleDateString("en-US", formatOptions);
+            document.getElementById("pdfTotalSlot").innerText = document.getElementById("statTotal").innerText;
+            document.getElementById("pdfPresentSlot").innerText = document.getElementById("statPresent").innerText;
+            
+            // Empty target to avoid stacked duplicate elements
+            pdfTargetBody.innerHTML = "";
+            
+            // Build absolute identical dynamic row loops inside print block container
+            webTableRows.forEach((row) => {
+                const cells = row.querySelectorAll("td");
+                const sn = cells[0].innerText;
+                const name = cells[1].innerText;
+                const designation = cells[2].innerText;
+                const status = "PRESENT"; // Canonical Text Injection
+                
+                const pdfRowHtml = `
+                    <tr>
+                        <td class="pdf-text-center">${sn}</td>
+                        <td><strong>${name}</strong></td>
+                        <td>${designation}</td>
+                        <td class="pdf-text-center" style="color: #155724; font-weight: 600;">${status}</td>
+                    </tr>
+                `;
+                pdfTargetBody.innerHTML += pdfRowHtml;
+            });
+            
+            // 2. Configure html2pdf to handle absolute scaling without device size limitations
+            const targetRenderElement = document.getElementById('pdfRenderArea');
+            
+            // Date parsing for safe filename strings
+            const dateStr = today.toISOString().split('T')[0];
+            
+            const opt = {
+                margin:       [12, 12, 12, 12], // Professional balanced margin padding bounding box
+                filename:     `Lions_325M_Attendance_Report_${dateStr}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { 
+                    scale: 2,               // Double scaling for ultra crisp typography resolution
+                    useCORS: true,          // Allow cross origin assets reading
+                    logging: false,         // Turn off console debugging blocks
+                    letterRendering: true,
+                    scrollY: 0,             // Anchor coordinates to origin to fix scroll displacement bugs
+                    scrollX: 0
+                },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak:    { mode: ['css', 'legacy'] } // Strictly honor table CSS breaks prevents partial clipped lines
+            };
+            
+            // Execute automated compiling workflow promise
+            html2pdf().set(opt).from(targetRenderElement).save()
+            .then(() => {
+                console.log("High-Resolution Academic Attendance PDF generated successfully with absolute data integration.");
+            })
+            .catch((err) => {
+                console.error("PDF engine crash error callback: ", err);
+                alert("PDF Download failed inside rendering loop context.");
+            });
+        }
+    </script>
 </body>
 </html>
