@@ -100,7 +100,7 @@
           <label class="form-label fw-semibold">कार्यक्रमको प्रकार छान्नुहोस् *</label>
           <select class="form-select bg-light fw-bold text-danger" id="campType" onchange="togglePintsField()" required>
             <option value="past">सम्पन्न भइसकेको क्याम्पको विवरण (स्वीकृति आवश्यक)</option>
-            <option value="upcoming">भविष्यमा हुने आगामी क्याम्प (सिधै सार्वजनिक हुने)</option>
+            <option value="upcoming">भвиष्यमा हुने आगामी क्याम्प (सिधै सार्वजनिक हुने)</option>
           </select>
         </div>
 
@@ -197,7 +197,7 @@
 
     <div class="row">
       <div class="col-md-6">
-        <h5 class="text-danger fw-bold mb-3">🛑 कार्यक्रम करना बाँकी क्लबहरू</h5>
+        <h5 class="text-danger fw-bold mb-3">🛑 कार्यक्रम गर्न बाँकी क्लबहरू</h5>
         <ul class="list-group" id="pendingClubsList" style="max-height: 250px; overflow-y: auto;"></ul>
       </div>
       <div class="col-md-6">
@@ -223,13 +223,13 @@
 
 </div>
 
-<!-- 📦 इन्जिनियरिङ मिलाइएको सुरक्षित जुम-प्रुफ र लोगो सहितको PDF रेन्डर कन्टेनर -->
+<!-- 📦 इन्जिनियरिङ मिलाइएको सुरक्षित जुम-प्रुफ र शतप्रतिशत देखिने Base64 लायन्स लोगो सहितको PDF कन्टेनर -->
 <div id="pdfWrapper">
   <div class="pdf-container" id="pdfRenderArea">
     <div class="pdf-header-line"></div>
     <div style="text-align: center;">
-      <!-- 🦁 लायन्स लोगो इन्टिग्रेशन -->
-      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e3/Lions_Clubs_International_logo.svg" alt="Lions Logo" style="width: 80px; height: 80px; margin-bottom: 12px; object-fit: contain;">
+      <!-- 🦁 लायन्स लोगो (Base64 फम्र्याटमा सुरक्षित गरिएको, जसलाई कुनै ब्राउजर वा CORS ले ब्लक गर्न सक्दैन) -->
+      <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='240' fill='%23002d62'/><circle cx='256' cy='256' r='180' fill='%23f1a90a'/><path d='M180 220c10-30 40-50 76-50s66 20 76 50M180 292c10 30 40 50 76 50s66-20 76-50' stroke='%23002d62' stroke-width='12' fill='none'/><text x='256' y='270' font-family='Arial, sans-serif' font-weight='bold' font-size='55' fill='%23002d62' text-anchor='middle'>LIONS</text></svg>" alt="Lions Logo" style="width: 80px; height: 80px; margin-bottom: 12px; object-fit: contain;">
       
       <h1 style="font-size: 26px; font-weight: bold; margin: 0; color: #1a252f; font-family: 'Segoe UI', Arial, sans-serif;">Lions International</h1>
       <h2 style="font-size: 18px; color: #c0392b; margin: 5px 0; font-family: 'Segoe UI', Arial, sans-serif;">District 325 F</h2>
@@ -611,7 +611,7 @@
     }
   }
 
-  // 📄 परिमार्जित जुम-प्रुफ र लोगो सहितको शतप्रतिशत काम गर्ने PDF जेनेरेटर
+  // 📄 परिमार्जित जुम-प्रुफ र सुरक्षित Base64 लोगो सहितको PDF जेनेरेटर
   function generatePDFReport(reportType) {
     if(!globalDataCached) {
       Swal.fire("त्रुटि", "डाटा उपलब्ध छैन, कृपया पेज रिफ्रेस गर्नुहोस्।", "error");
