@@ -4,65 +4,189 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lions District 325 F - Blood Donation System</title>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-  
+
   <style>
-    body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .main-header { background: linear-gradient(135deg, #8b0000, #d32f2f); color: white; padding: 25px; border-radius: 0 0 20px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-    .stats-card { background: white; border-radius: 12px; padding: 20px; border-left: 5px solid #d32f2f; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .card-title-custom { font-size: 0.9rem; color: #6c757d; font-weight: bold; text-transform: uppercase; }
-    .card-value-custom { font-size: 1.2rem; color: #212529; font-weight: bold; margin-top: 5px; }
-    .section-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; }
-    .hidden { display: none !important; }
-    .swal2-popup { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important; }
-    
-    /* 🛠️ फिक्स्ड जुम-प्रुफ लेआउट */
+    body {
+      background-color: #f4f6f9;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .main-header {
+      background: linear-gradient(135deg, #8b0000, #d32f2f);
+      color: white;
+      padding: 25px;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .stats-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      border-left: 5px solid #d32f2f;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .card-title-custom {
+      font-size: 0.9rem;
+      color: #6c757d;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .card-value-custom {
+      font-size: 1.2rem;
+      color: #212529;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .section-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 25px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .swal2-popup {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    }
+
+    /* =====================================================
+       PDF REPORT ONLY — FINAL FIXED LAYOUT
+       मुख्य सिस्टमको डिजाइन/फङ्सनमा असर गर्दैन
+    ===================================================== */
+
     #pdfWrapper {
-      position: fixed;
+      position: absolute;
       top: 0;
-      left: 0;
-      width: 794px; /* A4 Width */
+      left: -12000px;
+      width: 1123px;
       height: auto;
       z-index: -9999;
-      opacity: 0.02;
+      opacity: 1;
+      visibility: visible;
       pointer-events: none;
-      overflow: hidden;
+      overflow: visible;
+      background: #ffffff;
     }
+
     .pdf-container {
-      width: 100%;
+      width: 1123px;
+      min-height: auto;
       background: #ffffff !important;
       color: #000000 !important;
-      padding: 20px 40px;
+      padding: 18px 28px 25px 28px;
+      margin: 0;
       box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    .pdf-header-line { height: 4px; background-color: #8b0000; margin-bottom: 15px; }
-    .pdf-double-line { border-top: 2px double #d32f2f; margin: 15px 0; }
 
-    /* 🛡️ डाटा काटिनबाट जोगाउने CSS */
-    #pdfTableContainer table tr {
+    .pdf-header-line {
+      width: 100%;
+      height: 4px;
+      background-color: #8b0000;
+      margin: 0 0 8px 0;
+    }
+
+    .pdf-double-line {
+      width: 100%;
+      border-top: 2px solid #d32f2f;
+      margin: 8px 0 10px 0;
+    }
+
+    #pdfTableContainer {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+    }
+
+    #pdfTableContainer table {
+      width: 100% !important;
+      table-layout: fixed !important;
+      border-collapse: collapse !important;
+      border-spacing: 0 !important;
+      margin: 0 !important;
+      background: #ffffff !important;
+      color: #000000 !important;
+      font-size: 11px !important;
+    }
+
+    #pdfTableContainer thead {
+      display: table-header-group !important;
+    }
+
+    #pdfTableContainer tbody {
+      display: table-row-group !important;
+    }
+
+    #pdfTableContainer tr {
+      page-break-inside: avoid !important;
+      break-inside: avoid-page !important;
+      break-inside: avoid !important;
+    }
+
+    #pdfTableContainer th,
+    #pdfTableContainer td {
+      border: 1px solid #cfd4da !important;
+      padding: 6px 7px !important;
+      vertical-align: middle !important;
+      white-space: normal !important;
+      overflow-wrap: anywhere !important;
+      word-wrap: break-word !important;
+      word-break: normal !important;
+      line-height: 1.35 !important;
+      background-clip: padding-box !important;
+    }
+
+    #pdfTableContainer th {
+      background-color: #eef1f4 !important;
+      font-weight: 700 !important;
+      color: #1a252f !important;
+    }
+
+    .pdf-signature {
       page-break-inside: avoid !important;
       break-inside: avoid !important;
     }
   </style>
 </head>
+
 <body>
 
 <script>
   // 🔴 तपाईंको Google Apps Script URL
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbymO6Ws7EB9vmKzS3DdTArJ38pxt3S9O0P59RirY_DoI7fPMoVHA93XMaSS4-9hEoKK/exec";
+
   let currentUser = null;
   let globalDataCached = null;
 </script>
 
 <div class="container my-4">
-  
+
   <div class="main-header text-center mb-4">
     <div class="d-flex justify-content-between align-items-center px-3 mb-2">
       <div></div>
-      <button class="btn btn-sm btn-outline-light" id="loginBtn" onclick="toggleLoginModal()">🔑 व्यवस्थापक लगइन (Admin)</button>
+
+      <button
+        class="btn btn-sm btn-outline-light"
+        id="loginBtn"
+        onclick="toggleLoginModal()">
+        🔑 व्यवस्थापक लगइन (Admin)
+      </button>
+
       <span class="text-white d-none" id="userBadge"></span>
     </div>
+
     <h1 class="fw-bold m-0 h2">Lions International</h1>
     <h2 class="h4 my-1">District 325 F</h2>
     <h3 class="h5 fw-normal text-white-50">Blood Donation Management System</h3>
@@ -75,6 +199,7 @@
         <div class="card-value-custom" id="statTopCamp">प्रक्रियामा छ...</div>
       </div>
     </div>
+
     <div class="col-md-6">
       <div class="stats-card" style="border-left-color: #198754;">
         <div class="card-title-custom">🩸 सर्वाधिक रगत संकलन गर्ने क्लब (पिन्ट)</div>
@@ -84,12 +209,18 @@
   </div>
 
   <div class="section-card" id="upcomingTableSection">
-    <h4 class="mb-3 text-primary border-bottom pb-2">📅 आगामी रक्तदान कार्यक्रमहरू (Upcoming Camps)</h4>
+    <h4 class="mb-3 text-primary border-bottom pb-2">
+      📅 आगामी रक्तदान कार्यक्रमहरू (Upcoming Camps)
+    </h4>
+
     <div class="table-responsive">
       <table class="table table-striped table-bordered align-middle">
         <thead class="table-primary">
           <tr>
-            <th>मिति</th><th>आयोजक क्लब(हरू)</th><th>सहयोगी संस्था</th><th>स्थान र समय</th>
+            <th>मिति</th>
+            <th>आयोजक क्लब(हरू)</th>
+            <th>सहयोगी संस्था</th>
+            <th>स्थान र समय</th>
           </tr>
         </thead>
         <tbody id="upcomingTableBody"></tbody>
@@ -98,23 +229,40 @@
   </div>
 
   <div class="section-card" id="formSection">
-    <h4 class="mb-4 text-danger border-bottom pb-2">📋 रक्तदान विवरण / आगामी कार्यक्रम दर्ता फारम</h4>
+    <h4 class="mb-4 text-danger border-bottom pb-2">
+      📋 रक्तदान विवरण / आगामी कार्यक्रम दर्ता फारम
+    </h4>
+
     <form id="donationForm" onsubmit="handleFormSubmit(event)">
       <div class="row g-3">
-        
+
         <div class="col-md-4">
           <label class="form-label fw-semibold">कार्यक्रमको प्रकार छान्नुहोस् *</label>
-          <select class="form-select bg-light fw-bold text-danger" id="campType" onchange="togglePintsField()" required>
-            <option value="past">सम्पन्न भइसकेको क्याम्पको विवरण (स्वीकृति आवश्यक)</option>
-            <option value="upcoming">भविष्यमा हुने आगामी क्याम्प (सिधै सार्वजनिक हुने)</option>
+
+          <select
+            class="form-select bg-light fw-bold text-danger"
+            id="campType"
+            onchange="togglePintsField()"
+            required>
+
+            <option value="past">
+              सम्पन्न भइसकेको क्याम्पको विवरण (स्वीकृति आवश्यक)
+            </option>
+
+            <option value="upcoming">
+              भविष्यमा हुने आगामी क्याम्प (सिधै सार्वजनिक हुने)
+            </option>
           </select>
         </div>
 
         <div class="col-md-4">
           <label class="form-label fw-semibold">सहयोगी प्राविधिक संस्था *</label>
+
           <select class="form-select" id="partnerOrg" required>
             <option value="" disabled selected>छान्नुहोस्...</option>
-            <option value="T.U. Lions Blood Transfusion and Research Centre">T.U. Lions Blood Transfusion and Research Centre</option>
+            <option value="T.U. Lions Blood Transfusion and Research Centre">
+              T.U. Lions Blood Transfusion and Research Centre
+            </option>
             <option value="Nepal Red Cross Society">Nepal Red Cross Society</option>
             <option value="Kantipur Hospital">Kantipur Hospital</option>
           </select>
@@ -122,76 +270,162 @@
 
         <div class="col-md-4">
           <label class="form-label fw-semibold">आयोजना मिति (नेपालीमा) *</label>
+
           <div class="input-group">
-            <select class="form-select" id="dateYear" required><option value="२०८३">२०८३</option><option value="२०८४">२०८४</option></select>
-            <select class="form-select" id="dateMonth" required>
-              <option value="बैशाख">बैशाख</option><option value="जेठ">जेठ</option><option value="असार">असार</option><option value="साउन">साउन</option>
-              <option value="भदौ">भदौ</option><option value="असोज">असोज</option><option value="कार्तिक">कार्तिक</option><option value="मंसिर">मंसिर</option>
-              <option value="पुस">पुस</option><option value="माघ">माघ</option><option value="फागुन">फागुन</option><option value="चैत">चैत</option>
+            <select class="form-select" id="dateYear" required>
+              <option value="२०८३">२०८३</option>
+              <option value="२०८४">२०८४</option>
             </select>
-            <input type="number" class="form-control" id="dateDay" placeholder="गते" min="1" max="32" required>
+
+            <select class="form-select" id="dateMonth" required>
+              <option value="बैशाख">बैशाख</option>
+              <option value="जेठ">जेठ</option>
+              <option value="असार">असार</option>
+              <option value="साउन">साउन</option>
+              <option value="भदौ">भदौ</option>
+              <option value="असोज">असोज</option>
+              <option value="कार्तिक">कार्तिक</option>
+              <option value="मंसिर">मंसिर</option>
+              <option value="पुस">पुस</option>
+              <option value="माघ">माघ</option>
+              <option value="फागुन">फागुन</option>
+              <option value="चैत">चैत</option>
+            </select>
+
+            <input
+              type="number"
+              class="form-control"
+              id="dateDay"
+              placeholder="गते"
+              min="1"
+              max="32"
+              required>
           </div>
         </div>
 
         <div class="col-md-12">
-          <label class="form-label fw-semibold">आयोजक क्लबको नाम * (Ctrl थिचेर बहु-चयन गर्न सक्नुहुन्छ)</label>
-          <select class="form-select" id="clubsSelect" multiple style="height: 130px;" required></select>
+          <label class="form-label fw-semibold">
+            आयोजक क्लबको नाम * (Ctrl थिचेर बहु-चयन गर्न सक्नुहुन्छ)
+          </label>
+
+          <select
+            class="form-select"
+            id="clubsSelect"
+            multiple
+            style="height: 130px;"
+            required>
+          </select>
         </div>
 
         <div class="col-md-4">
           <label class="form-label fw-semibold">कार्यक्रम स्थल *</label>
-          <input type="text" class="form-control" id="location" placeholder="क्याम्प हुने स्थान" required>
+          <input
+            type="text"
+            class="form-control"
+            id="location"
+            placeholder="क्याम्प हुने स्थान"
+            required>
         </div>
 
         <div class="col-md-4">
           <label class="form-label fw-semibold">समय *</label>
-          <input type="text" class="form-control" id="time" placeholder="जस्तै: बिहान १० बजेदेखि" required>
+          <input
+            type="text"
+            class="form-control"
+            id="time"
+            placeholder="जस्तै: बिहान १० बजेदेखि"
+            required>
         </div>
 
         <div class="col-md-4" id="pintsContainer">
           <label class="form-label fw-semibold">संकलित रगत (पिन्ट) *</label>
-          <input type="number" class="form-control" id="pintsCollected" placeholder="कुल पिन्ट संख्या">
+          <input
+            type="number"
+            class="form-control"
+            id="pintsCollected"
+            placeholder="कुल पिन्ट संख्या">
         </div>
 
         <div class="col-12 mt-4 text-end">
-          <button type="submit" class="btn btn-danger px-4 py-2 fw-bold" id="submitBtn">
-            <span id="submitBtnSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+          <button
+            type="submit"
+            class="btn btn-danger px-4 py-2 fw-bold"
+            id="submitBtn">
+
+            <span
+              id="submitBtnSpinner"
+              class="spinner-border spinner-border-sm d-none"
+              role="status"
+              aria-hidden="true">
+            </span>
+
             <span id="submitBtnText">📤 विवरण दर्ता गर्नुहोस्</span>
           </button>
         </div>
+
       </div>
     </form>
   </div>
 
   <div class="section-card hidden" id="adminPanel">
-    <h4 class="mb-4 text-primary border-bottom pb-2">🛡️ व्यवस्थापकीय नियन्त्रण कक्ष (Admin Dashboard)</h4>
-    
+    <h4 class="mb-4 text-primary border-bottom pb-2">
+      🛡️ व्यवस्थापकीय नियन्त्रण कक्ष (Admin Dashboard)
+    </h4>
+
     <div class="card mb-4 bg-light border-primary">
       <div class="card-body">
-        <h5 class="card-title text-primary fw-bold mb-3">📊 आधिकारिक रिपोर्ट डाउनलोड केन्द्र (PDF Reports)</h5>
+        <h5 class="card-title text-primary fw-bold mb-3">
+          📊 आधिकारिक रिपोर्ट डाउनलोड केन्द्र (PDF Reports)
+        </h5>
+
         <div class="d-flex flex-wrap gap-2">
-          <button class="btn btn-outline-success fw-bold" onclick="generatePDFReport('approved')">📄 डोनेसन क्याम्प रिपोर्ट (Approved)</button>
-          <button class="btn btn-outline-danger fw-bold" onclick="generatePDFReport('pending_clubs')">📄 क्याम्प नगर्ने क्लबहरूको रिपोर्ट</button>
-          <button class="btn btn-outline-primary fw-bold" onclick="generatePDFReport('upcoming')">📄 भविष्यमा आयोजना हुने क्याम्प रिपोर्ट</button>
+          <button
+            class="btn btn-outline-success fw-bold"
+            onclick="generatePDFReport('approved')">
+            📄 डोनेसन क्याम्प रिपोर्ट (Approved)
+          </button>
+
+          <button
+            class="btn btn-outline-danger fw-bold"
+            onclick="generatePDFReport('pending_clubs')">
+            📄 क्याम्प नगर्ने क्लबहरूको रिपोर्ट
+          </button>
+
+          <button
+            class="btn btn-outline-primary fw-bold"
+            onclick="generatePDFReport('upcoming')">
+            📄 भविष्यमा आयोजना हुने क्याम्प रिपोर्ट
+          </button>
         </div>
       </div>
     </div>
 
-    <h5 class="text-warning fw-bold mb-3">⏳ स्वीकृत हुन बाँकी रेकर्डहरू (Pending Approvals)</h5>
+    <h5 class="text-warning fw-bold mb-3">
+      ⏳ स्वीकृत हुन बाँकी रेकर्डहरू (Pending Approvals)
+    </h5>
+
     <div class="table-responsive mb-5">
       <table class="table table-bordered table-striped align-middle">
         <tbody id="pendingTableBody"></tbody>
       </table>
     </div>
 
-    <h5 class="text-info fw-bold mb-3">🔄 आगामी क्याम्पलाई सम्पन्न (Approved Camp) मा सार्नुहोस्</h5>
+    <h5 class="text-info fw-bold mb-3">
+      🔄 आगामी क्याम्पलाई सम्पन्न (Approved Camp) मा सार्नुहोस्
+    </h5>
+
     <div class="table-responsive mb-5">
       <table class="table table-bordered align-middle">
         <thead class="table-info">
           <tr>
-            <th>मिति</th><th>क्लबहरू</th><th>स्थान</th><th>पिन्ट संख्या हाल्नुहोस्</th><th>कार्य</th>
+            <th>मिति</th>
+            <th>क्लबहरू</th>
+            <th>स्थान</th>
+            <th>पिन्ट संख्या हाल्नुहोस्</th>
+            <th>कार्य</th>
           </tr>
         </thead>
+
         <tbody id="adminUpcomingTableBody"></tbody>
       </table>
     </div>
@@ -199,24 +433,42 @@
     <div class="row">
       <div class="col-md-6">
         <h5 class="text-danger fw-bold mb-3">🛑 कार्यक्रम गर्न बाँकी क्लबहरू</h5>
-        <ul class="list-group" id="pendingClubsList" style="max-height: 250px; overflow-y: auto;"></ul>
+        <ul
+          class="list-group"
+          id="pendingClubsList"
+          style="max-height: 250px; overflow-y: auto;">
+        </ul>
       </div>
+
       <div class="col-md-6">
         <h5 class="text-success fw-bold mb-3">✅ कार्यक्रम सम्पन्न गरिसकेका क्लबहरू</h5>
-        <ul class="list-group" id="activeClubsList" style="max-height: 250px; overflow-y: auto;"></ul>
+        <ul
+          class="list-group"
+          id="activeClubsList"
+          style="max-height: 250px; overflow-y: auto;">
+        </ul>
       </div>
     </div>
   </div>
 
   <div class="section-card" id="liveTableSection">
-    <h4 class="mb-3 text-success border-bottom pb-2">📢 स्वीकृत क्याम्पहरूको प्रत्यक्ष विवरण (Live Camps View)</h4>
+    <h4 class="mb-3 text-success border-bottom pb-2">
+      📢 स्वीकृत क्याम्पहरूको प्रत्यक्ष विवरण (Live Camps View)
+    </h4>
+
     <div class="table-responsive">
       <table class="table table-hover align-middle">
         <thead class="table-light">
           <tr>
-            <th>मिति</th><th>आयोजक क्लब(हरू)</th><th>सहयोगी संस्था</th><th>स्थान - समय</th><th>संकलन (पिन्ट)</th><th>स्वीकृत गर्ने (Admin)</th>
+            <th>मिति</th>
+            <th>आयोजक क्लब(हरू)</th>
+            <th>सहयोगी संस्था</th>
+            <th>स्थान - समय</th>
+            <th>संकलन (पिन्ट)</th>
+            <th>स्वीकृत गर्ने (Admin)</th>
           </tr>
         </thead>
+
         <tbody id="liveTableBody"></tbody>
       </table>
     </div>
@@ -224,58 +476,190 @@
 
 </div>
 
-<!-- 📦 PDF कन्टेनर: नयाँ इमेज प्रिफेच सुनिश्चितता सहित -->
+<!-- =====================================================
+     PDF REPORT CONTAINER
+     GitHub root मा logo.png हुनुपर्छ
+====================================================== -->
 <div id="pdfWrapper">
   <div class="pdf-container" id="pdfRenderArea">
+
     <div class="pdf-header-line"></div>
-    <div style="text-align: center;">
-      <!-- 🦁 लायन्स लोगो (शतप्रतिशत रेन्डर ग्यारेन्टी भएको Base64 PNG) -->
-      <img id="pdfLogoImg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5Z9KfAAAAnFBMVEUAAADu00T////u00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00S8p7G9AAAAK3RSTlMAgO/vECBw72BwQIDv77Cg0HCw0CCw77CgcICw72BgcGCw0HAwQLDQ0HAwQLBskmoAAAFDSURBVFjH7dXZkoMgEAZgByOisgSNo9mSOf+72uDo8gwi9bMv8wFHz9VAUgp9S8Xp3H7fN8bpxVbH6I43fswR8u+XyH07V8gshm4vYwGvW+pY9+9E0bKOfWp7m8p5eY6pY8vCH0jsh64nQ9i38XUh+wYFpXwYorqPhXU70q5uS7r4xNEnwshC6gP2TEmSuEwNfUfCqrrUsqvax6XEDInEizOBlE6UqO6pY68mE2wOJuI/mAn9BvYw0Yp7Kembmbe6mwmFsczMWeGscv3wAisgXWwByZgAtY7wOqsW2AFrIM9MAGpA6bA6qx7YAWsgz0wAasfIKbA6qwNsALWwR6YgAnY7wGrs26BFbAO9sAEpA5YAn8fSMEEWIDv90fAAArwP4F+An1B6As+gX4b6NfU0XN99FwXPfWj897Y/wHw0w0TFAp4vAAAAABJRU5ErkJggg==" alt="Lions Logo" style="width: 70px; height: 70px; margin-bottom: 5px; object-fit: contain;">
-      
-      <h1 style="font-size: 24px; font-weight: bold; margin: 0; color: #1a252f; font-family: 'Segoe UI', Arial, sans-serif;">Lions International</h1>
-      <h2 style="font-size: 16px; color: #c0392b; margin: 3px 0; font-family: 'Segoe UI', Arial, sans-serif;">District 325 F</h2>
-      <p style="font-size: 11px; color: #7f8c8d; font-style: italic; margin: 0;">Blood Donation Management System</p>
-    </div>
-    <div class="pdf-double-line"></div>
-    
-    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 12px; font-family: 'Segoe UI', sans-serif;">
-      <span id="pdfSubject" style="font-weight: bold; font-size: 13px; color: #2c3e50;">Subject: Report</span>
-      <span id="pdfDate" style="color: #2c3e50;">Date: 2083-00-00</span>
+
+    <div style="
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      min-height:76px;
+      margin:0;
+      padding:0;
+    ">
+
+      <img
+        id="pdfLogoImg"
+        src="logo.png"
+        alt="Lions Logo"
+        crossorigin="anonymous"
+        style="
+          position:absolute;
+          left:8px;
+          top:2px;
+          width:70px;
+          height:70px;
+          object-fit:contain;
+          display:block;
+        ">
+
+      <div style="text-align:center; width:100%; margin:0; padding:0;">
+        <h1 style="
+          font-size:24px;
+          font-weight:700;
+          margin:0;
+          line-height:1.15;
+          color:#1a252f;
+          font-family:'Segoe UI', Arial, sans-serif;
+        ">
+          Lions International
+        </h1>
+
+        <h2 style="
+          font-size:17px;
+          font-weight:600;
+          color:#c0392b;
+          margin:3px 0 1px 0;
+          line-height:1.2;
+          font-family:'Segoe UI', Arial, sans-serif;
+        ">
+          District 325 F
+        </h2>
+
+        <p style="
+          font-size:11px;
+          color:#7f8c8d;
+          font-style:italic;
+          margin:2px 0 0 0;
+          line-height:1.2;
+        ">
+          Blood Donation Management System
+        </p>
+      </div>
     </div>
 
-    <!-- टेबल डाटा प्रवाह हुने ठाउँ -->
+    <div class="pdf-double-line"></div>
+
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      width:100%;
+      margin:0 0 9px 0;
+      padding:0;
+      font-size:11px;
+      font-family:'Segoe UI', sans-serif;
+    ">
+      <span
+        id="pdfSubject"
+        style="
+          font-weight:700;
+          font-size:12px;
+          color:#2c3e50;
+        ">
+        Subject: Report
+      </span>
+
+      <span
+        id="pdfDate"
+        style="
+          color:#2c3e50;
+          white-space:nowrap;
+        ">
+        Report Date:
+      </span>
+    </div>
+
     <div id="pdfTableContainer"></div>
 
-    <div style="margin-top: 40px; text-align: right; font-size: 12px; font-family: 'Segoe UI', sans-serif; line-height: 1.6;">
-      <p style="margin:0; color:#bdc3c7;">........................................................</p>
-      <p style="font-weight: bold; margin: 3px 0 0 0; color: #2c3e50;">(Authorized Signatory)</p>
-      <p id="pdfAdminBadge" style="color: #7f8c8d; font-size: 10px; margin: 0;">Admin: System Admin</p>
+    <div
+      class="pdf-signature"
+      style="
+        margin-top:22px;
+        padding-top:4px;
+        text-align:right;
+        font-size:11px;
+        font-family:'Segoe UI', sans-serif;
+        line-height:1.4;
+      ">
+
+      <p style="margin:0; color:#9aa0a6;">
+        ........................................................
+      </p>
+
+      <p style="
+        font-weight:700;
+        margin:2px 0 0 0;
+        color:#2c3e50;
+      ">
+        (Authorized Signatory)
+      </p>
+
+      <p
+        id="pdfAdminBadge"
+        style="
+          color:#7f8c8d;
+          font-size:9px;
+          margin:0;
+        ">
+        Admin: System Admin
+      </p>
     </div>
+
   </div>
 </div>
 
 <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
+
       <div class="modal-header bg-dark text-white">
         <h5 class="modal-title">🔑 Admin System Login</h5>
-        <button type="button" class="btn-close btn-close-white" onclick="toggleLoginModal()"></button>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          onclick="toggleLoginModal()">
+        </button>
       </div>
+
       <div class="modal-body">
         <div id="loginError" class="alert alert-danger d-none"></div>
+
         <div class="mb-3">
           <label class="form-label">प्रयोगकर्ताको नाम (Username)</label>
           <input type="text" class="form-control" id="loginUser">
         </div>
+
         <div class="mb-3">
           <label class="form-label">पासवर्ड (Password)</label>
           <input type="password" class="form-control" id="loginPass">
         </div>
       </div>
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="toggleLoginModal()">रद्द गर्नुहोस्</button>
-        <button type="button" class="btn btn-primary" id="loginSubmitBtn" onclick="processLogin()">लगइन गर्नुहोस्</button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          onclick="toggleLoginModal()">
+          रद्द गर्नुहोस्
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="loginSubmitBtn"
+          onclick="processLogin()">
+          लगइन गर्नुहोस्
+        </button>
       </div>
+
     </div>
   </div>
 </div>
@@ -286,7 +670,7 @@
 
 <script>
   let myModal;
-  
+
   window.addEventListener('DOMContentLoaded', () => {
     myModal = new bootstrap.Modal(document.getElementById('loginModal'));
     loadSystemData();
@@ -296,28 +680,35 @@
     Swal.fire({
       title: message,
       allowOutsideClick: false,
-      didOpen: () => { Swal.showLoading(); }
+      didOpen: () => {
+        Swal.showLoading();
+      }
     });
   }
 
   function togglePintsField() {
-    let type = document.getElementById('campType').value;
-    let container = document.getElementById('pintsContainer');
-    if(type === 'upcoming') {
+    const type = document.getElementById('campType').value;
+    const container = document.getElementById('pintsContainer');
+    const pintsInput = document.getElementById('pintsCollected');
+
+    if (type === 'upcoming') {
       container.classList.add('hidden');
-      document.getElementById('pintsCollected').required = false;
+      pintsInput.required = false;
     } else {
       container.classList.remove('hidden');
-      document.getElementById('pintsCollected').required = true;
+      pintsInput.required = true;
     }
   }
 
   function toggleLoginModal() {
-    if(!currentUser) { myModal.toggle(); } 
-    else {
+    if (!currentUser) {
+      myModal.toggle();
+    } else {
       currentUser = null;
+
       document.getElementById('userBadge').classList.add('d-none');
       document.getElementById('loginBtn').classList.remove('d-none');
+
       updateUIVisibility();
       loadSystemData();
     }
@@ -340,16 +731,21 @@
   function loadSystemData() {
     fetch(WEB_APP_URL, {
       method: "POST",
-      body: JSON.stringify({ action: "getInitialData" })
+      body: JSON.stringify({
+        action: "getInitialData"
+      })
     })
     .then(res => res.json())
     .then(data => {
       globalDataCached = data;
+
       const select = document.getElementById('clubsSelect');
       select.innerHTML = '';
+
       data.clubs.forEach(c => {
-        let opt = document.createElement('option');
-        opt.value = c; opt.innerText = c;
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.innerText = c;
         select.appendChild(opt);
       });
 
@@ -359,44 +755,77 @@
       renderUpcomingTable(data.upcomingRecords);
       renderLiveTable(data.approvedRecords);
       renderAdminData(data);
-    }).catch(err => {
-      Swal.fire("त्रुटि", "डाटा लोड गर्न समस्या भयो। नेटवर्क कनेक्सन जाँच गर्नुहोस् ।", "error");
+    })
+    .catch(err => {
+      console.error(err);
+
+      Swal.fire(
+        "त्रुटि",
+        "डाटा लोड गर्न समस्या भयो। नेटवर्क कनेक्सन जाँच गर्नुहोस् ।",
+        "error"
+      );
     });
   }
 
   function renderUpcomingTable(records) {
-    let tbody = document.getElementById('upcomingTableBody');
+    const tbody = document.getElementById('upcomingTableBody');
     tbody.innerHTML = '';
-    if(!records || records.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">हाल कुनै पनि आगामी कार्यक्रमहरू सूचीकृत गरिएको छैन ।</td></tr>`;
-    } else {
-      records.forEach(r => {
-        tbody.innerHTML += `
-          <tr class="table-warning">
-            <td><span class="badge bg-primary">${r.date}</span></td>
-            <td><strong>${r.clubs}</strong></td>
-            <td>${r.partner}</td>
-            <td>📍 ${r.location} <br> 🕒 ${r.time}</td>
-          </tr>`;
-      });
+
+    if (!records || records.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4" class="text-center text-muted">
+            हाल कुनै पनि आगामी कार्यक्रमहरू सूचीकृत गरिएको छैन ।
+          </td>
+        </tr>
+      `;
+      return;
     }
+
+    records.forEach(r => {
+      tbody.innerHTML += `
+        <tr class="table-warning">
+          <td>
+            <span class="badge bg-primary">${r.date}</span>
+          </td>
+
+          <td>
+            <strong>${r.clubs}</strong>
+          </td>
+
+          <td>${r.partner}</td>
+
+          <td>
+            📍 ${r.location}
+            <br>
+            🕒 ${r.time}
+          </td>
+        </tr>
+      `;
+    });
   }
 
   function handleFormSubmit(e) {
     e.preventDefault();
-    
+
     const submitBtn = document.getElementById('submitBtn');
     const spinner = document.getElementById('submitBtnSpinner');
     const btnText = document.getElementById('submitBtnText');
-    
+
     submitBtn.disabled = true;
     spinner.classList.remove('d-none');
     btnText.innerText = " प्रशोधन हुँदैछ...";
 
-    let selectedClubs = Array.from(document.getElementById('clubsSelect').selectedOptions).map(option => option.value);
-    let bsDateStr = `${document.getElementById('dateYear').value}-${document.getElementById('dateMonth').value}-${document.getElementById('dateDay').value}`;
-    
-    let formData = {
+    const selectedClubs = Array
+      .from(document.getElementById('clubsSelect').selectedOptions)
+      .map(option => option.value);
+
+    const bsDateStr =
+      `${document.getElementById('dateYear').value}-` +
+      `${document.getElementById('dateMonth').value}-` +
+      `${document.getElementById('dateDay').value}`;
+
+    const formData = {
       campType: document.getElementById('campType').value,
       partnerOrg: document.getElementById('partnerOrg').value,
       bsDate: bsDateStr,
@@ -408,7 +837,10 @@
 
     fetch(WEB_APP_URL, {
       method: "POST",
-      body: JSON.stringify({ action: "submitForm", formData: formData })
+      body: JSON.stringify({
+        action: "submitForm",
+        formData: formData
+      })
     })
     .then(res => res.json())
     .then(res => {
@@ -422,46 +854,60 @@
         icon: "success",
         confirmButtonText: "ठीक छ"
       });
-      
+
       document.getElementById('donationForm').reset();
       togglePintsField();
       loadSystemData();
     })
     .catch(err => {
+      console.error(err);
+
       submitBtn.disabled = false;
       spinner.classList.add('d-none');
       btnText.innerText = "📤 विवरण दर्ता गर्नुहोस्";
-      Swal.fire("त्रुटि", "विवरण सुरक्षित गर्न प्राविधिक अवरोध आइपर्‍यो ।", "error");
+
+      Swal.fire(
+        "त्रुटि",
+        "विवरण सुरक्षित गर्न प्राविधिक अवरोध आइपर्‍यो ।",
+        "error"
+      );
     });
   }
 
   function processLogin() {
-    let u = document.getElementById('loginUser').value;
-    let p = document.getElementById('loginPass').value;
-    
+    const u = document.getElementById('loginUser').value;
+    const p = document.getElementById('loginPass').value;
+
     const loginBtn = document.getElementById('loginSubmitBtn');
+
     loginBtn.disabled = true;
     loginBtn.innerText = "प्रमाणित हुँदैछ...";
 
     fetch(WEB_APP_URL, {
       method: "POST",
-      body: JSON.stringify({ action: "login", username: u, password: p })
+      body: JSON.stringify({
+        action: "login",
+        username: u,
+        password: p
+      })
     })
     .then(res => res.json())
     .then(res => {
       loginBtn.disabled = false;
       loginBtn.innerText = "लगइन गर्नुहोस्";
 
-      if(res.status === "success") {
+      if (res.status === "success") {
         currentUser = res.user;
         myModal.hide();
+
         document.getElementById('loginBtn').classList.add('d-none');
-        let badge = document.getElementById('userBadge');
+
+        const badge = document.getElementById('userBadge');
         badge.innerText = `👤 ${currentUser} (Log Out)`;
         badge.classList.remove('d-none');
         badge.style.cursor = "pointer";
         badge.onclick = toggleLoginModal;
-        
+
         Swal.fire({
           title: "स्वागत छ!",
           text: "तपाईं प्रणालीमा सफलतापूर्वक लगइन हुनुभएको छ ।",
@@ -473,61 +919,123 @@
         updateUIVisibility();
         loadSystemData();
       } else {
-        let err = document.getElementById('loginError');
+        const err = document.getElementById('loginError');
         err.innerText = res.message;
         err.classList.remove('d-none');
       }
-    }).catch(() => {
+    })
+    .catch(err => {
+      console.error(err);
+
       loginBtn.disabled = false;
       loginBtn.innerText = "लगइन गर्नुहोस्";
-      Swal.fire("त्रुटि", "सर्भरसँग कनेक्सन हुन सकेन ।", "error");
+
+      Swal.fire(
+        "त्रुटि",
+        "सर्भरसँग कनेक्सन हुन सकेन ।",
+        "error"
+      );
     });
   }
 
   function renderAdminData(data) {
-    let tbody = document.getElementById('pendingTableBody');
+    const tbody = document.getElementById('pendingTableBody');
     tbody.innerHTML = '';
-    if(!data.pendingRecords || data.pendingRecords.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">हाल कुनै पनि नयाँ रेकर्ड स्वीकृतिका लागि बाँकी छैन ।</td></tr>`;
+
+    if (!data.pendingRecords || data.pendingRecords.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" class="text-center text-muted">
+            हाल कुनै पनि नयाँ रेकर्ड स्वीकृतिका लागि बाँकी छैन ।
+          </td>
+        </tr>
+      `;
     } else {
       data.pendingRecords.forEach(r => {
         tbody.innerHTML += `
           <tr>
-            <td>${r.date}</td><td>${r.partner}</td><td><strong>${r.clubs}</strong></td>
-            <td>${r.location}</td><td><span class="badge bg-danger">${r.pints} पिन्ट</span></td>
-            <td><button class="btn btn-sm btn-success" onclick="approveRecord('${r.id}')">✔️ Approve</button></td>
-          </tr>`;
+            <td>${r.date}</td>
+            <td>${r.partner}</td>
+            <td><strong>${r.clubs}</strong></td>
+            <td>${r.location}</td>
+            <td>
+              <span class="badge bg-danger">${r.pints} पिन्ट</span>
+            </td>
+            <td>
+              <button
+                class="btn btn-sm btn-success"
+                onclick="approveRecord('${r.id}')">
+                ✔️ Approve
+              </button>
+            </td>
+          </tr>
+        `;
       });
     }
 
-    let upTbody = document.getElementById('adminUpcomingTableBody');
+    const upTbody = document.getElementById('adminUpcomingTableBody');
     upTbody.innerHTML = '';
-    if(!data.upcomingRecords || data.upcomingRecords.length === 0) {
-      upTbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">हाल कुनै पनि आगामी कार्यक्रमहरू सूचीकृत छैनन् ।</td></tr>`;
+
+    if (!data.upcomingRecords || data.upcomingRecords.length === 0) {
+      upTbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="text-center text-muted">
+            हाल कुनै पनि आगामी कार्यक्रमहरू सूचीकृत छैनन् ।
+          </td>
+        </tr>
+      `;
     } else {
       data.upcomingRecords.forEach(r => {
         upTbody.innerHTML += `
           <tr>
-            <td>${r.date}</td><td><strong>${r.clubs}</strong></td><td>${r.location}</td>
-            <td><input type="number" id="pints_${r.id}" class="form-control form-control-sm" placeholder="कुल पिन्ट संख्या" style="width:120px;"></td>
-            <td><button class="btn btn-sm btn-primary" onclick="convertUpcomingToPast('${r.id}')">💾 सम्पन्न भयो</button></td>
-          </tr>`;
+            <td>${r.date}</td>
+            <td><strong>${r.clubs}</strong></td>
+            <td>${r.location}</td>
+
+            <td>
+              <input
+                type="number"
+                id="pints_${r.id}"
+                class="form-control form-control-sm"
+                placeholder="कुल पिन्ट संख्या"
+                style="width:120px;">
+            </td>
+
+            <td>
+              <button
+                class="btn btn-sm btn-primary"
+                onclick="convertUpcomingToPast('${r.id}')">
+                💾 सम्पन्न भयो
+              </button>
+            </td>
+          </tr>
+        `;
       });
     }
 
-    let pClubsUl = document.getElementById('pendingClubsList');
+    const pClubsUl = document.getElementById('pendingClubsList');
     pClubsUl.innerHTML = '';
-    if(data.pendingClubs) {
+
+    if (data.pendingClubs) {
       data.pendingClubs.forEach(c => {
-        pClubsUl.innerHTML += `<li class="list-group-item list-group-item-danger small">📍 ${c}</li>`;
+        pClubsUl.innerHTML += `
+          <li class="list-group-item list-group-item-danger small">
+            📍 ${c}
+          </li>
+        `;
       });
     }
 
-    let aClubsUl = document.getElementById('activeClubsList');
+    const aClubsUl = document.getElementById('activeClubsList');
     aClubsUl.innerHTML = '';
-    if(data.activeClubs) {
+
+    if (data.activeClubs) {
       data.activeClubs.forEach(c => {
-        aClubsUl.innerHTML += `<li class="list-group-item list-group-item-success small">🎉 ${c}</li>`;
+        aClubsUl.innerHTML += `
+          <li class="list-group-item list-group-item-success small">
+            🎉 ${c}
+          </li>
+        `;
       });
     }
   }
@@ -542,32 +1050,61 @@
       cancelButtonColor: "#6c757d",
       confirmButtonText: "हो, स्वीकृत गर्नुहोस्",
       cancelButtonText: "रद्द गर्नुहोस्"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        showLoading("विवरण स्वीकृत हुँदैछ...");
-        fetch(WEB_APP_URL, {
-          method: "POST",
-          body: JSON.stringify({ action: "approveRecord", recordId: id, approvedBy: currentUser })
-        })
-        .then(res => res.json())
-        .then(res => {
-          Swal.close();
-          if(res.status === "approved") {
-            Swal.fire("सफल!", "विवरण सफलतापूर्वक स्वीकृत गरिएको छ ।", "success");
-            loadSystemData();
-          }
-        }).catch(() => { Swal.close(); Swal.fire("त्रुटि", "प्रक्रिया पूरा गर्न सकिएन ।", "error"); });
+    })
+    .then(result => {
+      if (!result.isConfirmed) {
+        return;
       }
+
+      showLoading("विवरण स्वीकृत हुँदैछ...");
+
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "approveRecord",
+          recordId: id,
+          approvedBy: currentUser
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        Swal.close();
+
+        if (res.status === "approved") {
+          Swal.fire(
+            "सफल!",
+            "विवरण सफलतापूर्वक स्वीकृत गरिएको छ ।",
+            "success"
+          );
+
+          loadSystemData();
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        Swal.close();
+
+        Swal.fire(
+          "त्रुटि",
+          "प्रक्रिया पूरा गर्न सकिएन ।",
+          "error"
+        );
+      });
     });
   }
 
   function convertUpcomingToPast(id) {
-    let pintsVal = document.getElementById(`pints_${id}`).value;
-    if(!pintsVal || pintsVal <= 0) {
-      Swal.fire("चेतावनी", "कृपया उक्त कार्यक्रममा संकलन भएको कुल रगतको पिन्ट संख्या उल्लेख गर्नुहोस् ।", "warning");
+    const pintsVal = document.getElementById(`pints_${id}`).value;
+
+    if (!pintsVal || Number(pintsVal) <= 0) {
+      Swal.fire(
+        "चेतावनी",
+        "कृपया उक्त कार्यक्रममा संकलन भएको कुल रगतको पिन्ट संख्या उल्लेख गर्नुहोस् ।",
+        "warning"
+      );
       return;
     }
-    
+
     Swal.fire({
       title: "कार्यक्रम सम्पन्न भएको हो?",
       text: "यस आगामी क्याम्पलाई रगत संख्या सहित मुख्य रेकर्ड (Live Records) मा सारिनेछ ।",
@@ -577,142 +1114,474 @@
       cancelButtonColor: "#6c757d",
       confirmButtonText: "हो, सम्पन्न भयो",
       cancelButtonText: "रद्द गर्नुहोस्"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        showLoading("विवरण अद्यावधिक हुँदैछ...");
-        fetch(WEB_APP_URL, {
-          method: "POST",
-          body: JSON.stringify({ action: "approveRecord", recordId: id, approvedBy: currentUser, pints: pintsVal })
-        })
-        .then(res => res.json())
-        .then(res => {
-          Swal.close();
-          if(res.status === "approved") {
-            Swal.fire("सम्पन्न !", "आगामी क्याम्प सफलतापूर्वक सम्पन्न सूचीमा सारिएको छ ।", "success");
-            loadSystemData();
-          }
-        }).catch(() => { Swal.close(); Swal.fire("त्रुटि", "अद्यावधिक गर्न सकिएन ।", "error"); });
+    })
+    .then(result => {
+      if (!result.isConfirmed) {
+        return;
       }
+
+      showLoading("विवरण अद्यावधिक हुँदैछ...");
+
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "approveRecord",
+          recordId: id,
+          approvedBy: currentUser,
+          pints: pintsVal
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        Swal.close();
+
+        if (res.status === "approved") {
+          Swal.fire(
+            "सम्पन्न !",
+            "आगामी क्याम्प सफलतापूर्वक सम्पन्न सूचीमा सारिएको छ ।",
+            "success"
+          );
+
+          loadSystemData();
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        Swal.close();
+
+        Swal.fire(
+          "त्रुटि",
+          "अद्यावधिक गर्न सकिएन ।",
+          "error"
+        );
+      });
     });
   }
 
   function renderLiveTable(records) {
-    let tbody = document.getElementById('liveTableBody');
+    const tbody = document.getElementById('liveTableBody');
     tbody.innerHTML = '';
-    if(!records || records.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">हालसम्म कुनै पनि स्वीकृत विवरणहरू फेला परेनन् ।</td></tr>`;
-    } else {
-      records.forEach(r => {
-        tbody.innerHTML += `
-          <tr>
-            <td><span class="badge bg-secondary">${r.date}</span></td>
-            <td><strong>${r.clubs}</strong></td>
-            <td>${r.partner}</td>
-            <td>${r.location} <br> <small class="text-muted">${r.time}</small></td>
-            <td class="fw-bold text-danger">${r.pints}</td>
-            <td><span class="badge bg-light text-dark border">✍️ ${r.approvedBy}</span></td>
-          </tr>`;
-      });
-    }
-  }
 
-  // 📄 परिमार्जित जुम-प्रुफ, थपिएको पेज-ब्रेक र ग्यारेन्टी लोगो सहितको PDF जेनेरेटर
-  function generatePDFReport(reportType) {
-    if(!globalDataCached) {
-      Swal.fire("त्रुटि", "डाटा उपलब्ध छैन, कृपया पेज रिफ्रेस गर्नुहोस्।", "error");
+    if (!records || records.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" class="text-center text-muted">
+            हालसम्म कुनै पनि स्वीकृत विवरणहरू फेला परेनन् ।
+          </td>
+        </tr>
+      `;
       return;
     }
 
-    showLoading("डाटा म्यापिङ गरी PDF फाइल डाउनलोड हुँदैछ...");
+    records.forEach(r => {
+      tbody.innerHTML += `
+        <tr>
+          <td>
+            <span class="badge bg-secondary">${r.date}</span>
+          </td>
+
+          <td>
+            <strong>${r.clubs}</strong>
+          </td>
+
+          <td>${r.partner}</td>
+
+          <td>
+            ${r.location}
+            <br>
+            <small class="text-muted">${r.time}</small>
+          </td>
+
+          <td class="fw-bold text-danger">${r.pints}</td>
+
+          <td>
+            <span class="badge bg-light text-dark border">
+              ✍️ ${r.approvedBy}
+            </span>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  /* =====================================================
+     PDF HELPER FUNCTIONS
+  ===================================================== */
+
+  function escapePDFHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  async function waitForPDFLogo() {
+    const logoImg = document.getElementById("pdfLogoImg");
+
+    if (!logoImg) {
+      throw new Error("PDF logo element not found.");
+    }
+
+    logoImg.style.visibility = "visible";
+
+    const sourceAttribute = logoImg.getAttribute("src") || "logo.png";
+    const absoluteSource = new URL(sourceAttribute, window.location.href).href;
+    const separator = absoluteSource.includes("?") ? "&" : "?";
+
+    logoImg.src =
+      absoluteSource +
+      separator +
+      "pdfCache=" +
+      Date.now();
+
+    try {
+      if (typeof logoImg.decode === "function") {
+        await logoImg.decode();
+      } else {
+        await new Promise((resolve, reject) => {
+          logoImg.onload = resolve;
+          logoImg.onerror = reject;
+        });
+      }
+
+      if (!logoImg.naturalWidth || !logoImg.naturalHeight) {
+        throw new Error("Logo image has invalid dimensions.");
+      }
+
+      return true;
+    } catch (error) {
+      console.error("PDF logo load error:", error);
+
+      /*
+       * Logo load नभए पनि PDF download रोकिन्न।
+       */
+      logoImg.style.visibility = "hidden";
+      return false;
+    }
+  }
+
+  /* =====================================================
+     PDF REPORT GENERATOR — FINAL FIXED VERSION
+  ===================================================== */
+
+  async function generatePDFReport(reportType) {
+    if (!globalDataCached) {
+      Swal.fire(
+        "त्रुटि",
+        "डाटा उपलब्ध छैन, कृपया पेज रिफ्रेस गर्नुहोस्।",
+        "error"
+      );
+      return;
+    }
+
+    showLoading("रिपोर्ट तयार गरी PDF डाउनलोड हुँदैछ...");
+
+    const pdfWrapper = document.getElementById("pdfWrapper");
+    const pdfElement = document.getElementById("pdfRenderArea");
+    const pdfTableContainer = document.getElementById("pdfTableContainer");
+    const logoImg = document.getElementById("pdfLogoImg");
 
     let subjectText = "";
-    let tableHtml = `<table class="table table-bordered align-middle m-0" style="font-size:12px; width:100%; border:1px solid #dee2e6; color:#000000 !important; background:#ffffff !important;">`;
     let filename = "Report.pdf";
+    let tableHtml = "";
 
-    if(reportType === 'approved') {
-      subjectText = "Subject: Blood Donation Camps Report (Approved)";
-      filename = "Approved_Camps_Report.pdf";
-      tableHtml += `<thead style="background-color:#f1f3f5 !important; font-weight:bold;"><tr><th style="padding:8px; border:1px solid #dee2e6;">मिति (Date)</th><th style="padding:8px; border:1px solid #dee2e6;">आयोजक क्लब(हरू)</th><th style="padding:8px; border:1px solid #dee2e6;">सहयोगी संस्था</th><th style="padding:8px; border:1px solid #dee2e6;">स्थान</th><th style="padding:8px; border:1px solid #dee2e6;">पिन्ट</th></tr></thead><tbody>`;
-      
-      if(globalDataCached.approvedRecords && globalDataCached.approvedRecords.length > 0) {
-        globalDataCached.approvedRecords.forEach(r => {
-          tableHtml += `<tr><td style="padding:8px; border:1px solid #dee2e6;">${r.date}</td><td style="padding:8px; border:1px solid #dee2e6;"><b>${r.clubs}</b></td><td style="padding:8px; border:1px solid #dee2e6;">${r.partner}</td><td style="padding:8px; border:1px solid #dee2e6;">${r.location}</td><td style="padding:8px; border:1px solid #dee2e6; color:#d32f2f; font-weight:bold;">${r.pints} Pin</td></tr>`;
-        });
-      } else {
-        tableHtml += `<tr><td colspan="5" style="text-align:center; padding:10px;">कुनै पनि डाटा उपलब्ध छैन</td></tr>`;
+    try {
+      logoImg.style.visibility = "visible";
+
+      if (reportType === "approved") {
+        subjectText = "Subject: Blood Donation Camps Report (Approved)";
+        filename = "Approved_Camps_Report.pdf";
+
+        tableHtml = `
+          <table>
+            <colgroup>
+              <col style="width:13%;">
+              <col style="width:24%;">
+              <col style="width:29%;">
+              <col style="width:25%;">
+              <col style="width:9%;">
+            </colgroup>
+
+            <thead>
+              <tr>
+                <th>मिति (Date)</th>
+                <th>आयोजक क्लब(हरू)</th>
+                <th>सहयोगी संस्था</th>
+                <th>स्थान</th>
+                <th style="text-align:center;">पिन्ट</th>
+              </tr>
+            </thead>
+
+            <tbody>
+        `;
+
+        if (
+          globalDataCached.approvedRecords &&
+          globalDataCached.approvedRecords.length > 0
+        ) {
+          globalDataCached.approvedRecords.forEach(r => {
+            tableHtml += `
+              <tr>
+                <td>${escapePDFHtml(r.date)}</td>
+
+                <td>
+                  <strong>${escapePDFHtml(r.clubs)}</strong>
+                </td>
+
+                <td>${escapePDFHtml(r.partner)}</td>
+
+                <td>${escapePDFHtml(r.location)}</td>
+
+                <td style="
+                  text-align:center;
+                  color:#d32f2f;
+                  font-weight:700;
+                  white-space:nowrap !important;
+                ">
+                  ${escapePDFHtml(r.pints)} Pin
+                </td>
+              </tr>
+            `;
+          });
+        } else {
+          tableHtml += `
+            <tr>
+              <td colspan="5" style="text-align:center; padding:12px;">
+                कुनै पनि डाटा उपलब्ध छैन
+              </td>
+            </tr>
+          `;
+        }
+
+        tableHtml += `
+            </tbody>
+          </table>
+        `;
       }
-    } 
-    else if(reportType === 'pending_clubs') {
-      subjectText = "Subject: Non-Participating Clubs List";
-      filename = "Non_Participating_Clubs_Report.pdf";
-      tableHtml += `<thead style="background-color:#f1f3f5 !important; font-weight:bold;"><tr><th style="padding:8px; border:1px solid #dee2e6; width:15%;">क्र.सं.</th><th style="padding:8px; border:1px solid #dee2e6;">क्लबको नाम (Club Name)</th><th style="padding:8px; border:1px solid #dee2e6;">स्थिति (Status)</th></tr></thead><tbody>`;
-      
-      if(globalDataCached.pendingClubs && globalDataCached.pendingClubs.length > 0) {
-        globalDataCached.pendingClubs.forEach((c, index) => {
-          tableHtml += `<tr><td style="padding:8px; border:1px solid #dee2e6;">${index + 1}</td><td style="padding:8px; border:1px solid #dee2e6;"><b>${c}</b></td><td style="padding:8px; border:1px solid #dee2e6; color:#d32f2f; font-weight:bold;">Pending</td></tr>`;
-        });
-      } else {
-        tableHtml += `<tr><td colspan="3" style="text-align:center; padding:10px;">कुनै पनि डाटा उपलब्ध छैन</td></tr>`;
+
+      else if (reportType === "pending_clubs") {
+        subjectText = "Subject: Non-Participating Clubs List";
+        filename = "Non_Participating_Clubs_Report.pdf";
+
+        tableHtml = `
+          <table>
+            <colgroup>
+              <col style="width:12%;">
+              <col style="width:63%;">
+              <col style="width:25%;">
+            </colgroup>
+
+            <thead>
+              <tr>
+                <th style="text-align:center;">क्र.सं.</th>
+                <th>क्लबको नाम (Club Name)</th>
+                <th style="text-align:center;">स्थिति (Status)</th>
+              </tr>
+            </thead>
+
+            <tbody>
+        `;
+
+        if (
+          globalDataCached.pendingClubs &&
+          globalDataCached.pendingClubs.length > 0
+        ) {
+          globalDataCached.pendingClubs.forEach((club, index) => {
+            tableHtml += `
+              <tr>
+                <td style="text-align:center;">
+                  ${index + 1}
+                </td>
+
+                <td>
+                  <strong>${escapePDFHtml(club)}</strong>
+                </td>
+
+                <td style="
+                  text-align:center;
+                  color:#d32f2f;
+                  font-weight:700;
+                ">
+                  Pending
+                </td>
+              </tr>
+            `;
+          });
+        } else {
+          tableHtml += `
+            <tr>
+              <td colspan="3" style="text-align:center; padding:12px;">
+                कुनै पनि डाटा उपलब्ध छैन
+              </td>
+            </tr>
+          `;
+        }
+
+        tableHtml += `
+            </tbody>
+          </table>
+        `;
       }
-    } 
-    else if(reportType === 'upcoming') {
-      subjectText = "Subject: Upcoming Blood Donation Camps Report";
-      filename = "Upcoming_Camps_Report.pdf";
-      tableHtml += `<thead style="background-color:#f1f3f5 !important; font-weight:bold;"><tr><th style="padding:8px; border:1px solid #dee2e6;">मिति</th><th style="padding:8px; border:1px solid #dee2e6;">आयोजक क्लब(हरू)</th><th style="padding:8px; border:1px solid #dee2e6;">सहयोगी संस्था</th><th style="padding:8px; border:1px solid #dee2e6;">स्थान र समय</th></tr></thead><tbody>`;
-      
-      if(globalDataCached.upcomingRecords && globalDataCached.upcomingRecords.length > 0) {
-        globalDataCached.upcomingRecords.forEach(r => {
-          tableHtml += `<tr><td style="padding:8px; border:1px solid #dee2e6;">${r.date}</td><td style="padding:8px; border:1px solid #dee2e6;"><b>${r.clubs}</b></td><td style="padding:8px; border:1px solid #dee2e6;">${r.partner}</td><td style="padding:8px; border:1px solid #dee2e6;">${r.location} (${r.time})</td></tr>`;
-        });
-      } else {
-        tableHtml += `<tr><td colspan="4" style="text-align:center; padding:10px;">कुनै पनि डाटा उपलब्ध छैन</td></tr>`;
+
+      else if (reportType === "upcoming") {
+        subjectText = "Subject: Upcoming Blood Donation Camps Report";
+        filename = "Upcoming_Camps_Report.pdf";
+
+        tableHtml = `
+          <table>
+            <colgroup>
+              <col style="width:14%;">
+              <col style="width:27%;">
+              <col style="width:30%;">
+              <col style="width:29%;">
+            </colgroup>
+
+            <thead>
+              <tr>
+                <th>मिति</th>
+                <th>आयोजक क्लब(हरू)</th>
+                <th>सहयोगी संस्था</th>
+                <th>स्थान र समय</th>
+              </tr>
+            </thead>
+
+            <tbody>
+        `;
+
+        if (
+          globalDataCached.upcomingRecords &&
+          globalDataCached.upcomingRecords.length > 0
+        ) {
+          globalDataCached.upcomingRecords.forEach(r => {
+            const locationAndTime =
+              `${r.location || ""}${r.time ? " (" + r.time + ")" : ""}`;
+
+            tableHtml += `
+              <tr>
+                <td>${escapePDFHtml(r.date)}</td>
+
+                <td>
+                  <strong>${escapePDFHtml(r.clubs)}</strong>
+                </td>
+
+                <td>${escapePDFHtml(r.partner)}</td>
+
+                <td>${escapePDFHtml(locationAndTime)}</td>
+              </tr>
+            `;
+          });
+        } else {
+          tableHtml += `
+            <tr>
+              <td colspan="4" style="text-align:center; padding:12px;">
+                कुनै पनि डाटा उपलब्ध छैन
+              </td>
+            </tr>
+          `;
+        }
+
+        tableHtml += `
+            </tbody>
+          </table>
+        `;
       }
-    }
-    tableHtml += `</tbody></table>`;
 
-    let today = new Date();
-    document.getElementById('pdfSubject').innerText = subjectText;
-    document.getElementById('pdfDate').innerText = `Report Date: ${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-    document.getElementById('pdfAdminBadge').innerText = `Admin: ${currentUser || 'System Admin'}`;
-    document.getElementById('pdfTableContainer').innerHTML = tableHtml;
+      else {
+        throw new Error("Invalid report type.");
+      }
 
-    // लोगो इमेज पूर्ण रूपमा लोड भएको सुनिश्चित गर्न इमेज एलिमेन्टलाई प्रिफेच ट्यागिङ
-    const logoImg = document.getElementById('pdfLogoImg');
-    const element = document.getElementById('pdfRenderArea');
-    
-    const opt = {
-      margin:       [15, 30, 30, 30],
-      filename:     filename,
-      image:        { type: 'jpeg', quality: 1.0 },
-      // 🛡️ पेजको बीचमा टेबल रो (Row) काटिनबाट रोक्ने मोड
-      pagebreak:    { mode: ['css', 'legacy'], avoid: 'tr' },
-      html2canvas:  { 
-        scale: 2, 
-        useCORS: true, 
-        backgroundColor: '#ffffff',
-        logging: false,
-        windowWidth: 794,
-        delay: 500 // 🛑 लोगो रेन्डर हुन र इमेज कम्प्लिट हुन आधा सेकेन्डको बफर टाइम थपियो
-      },
-      jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait' }
-    };
+      const today = new Date();
 
-    // इमेज कम्प्लिट भएपछि मात्र डाउनलोड ट्रिगर गर्ने सुरक्षित तरिका
-    const triggerDownload = () => {
-      html2pdf().set(opt).from(element).save().then(() => {
-        Swal.close();
-      }).catch(err => {
-        Swal.close();
-        Swal.fire("त्रुटि", "PDF कन्भर्ट गर्दा समस्या आयो।", "error");
-      });
-    };
+      const reportDate =
+        today.getFullYear() +
+        "-" +
+        String(today.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(today.getDate()).padStart(2, "0");
 
-    if (logoImg.complete) {
-      setTimeout(triggerDownload, 100);
-    } else {
-      logoImg.onload = triggerDownload;
+      document.getElementById("pdfSubject").innerText = subjectText;
+      document.getElementById("pdfDate").innerText =
+        `Report Date: ${reportDate}`;
+
+      document.getElementById("pdfAdminBadge").innerText =
+        `Admin: ${currentUser || "System Admin"}`;
+
+      pdfTableContainer.innerHTML = tableHtml;
+
+      await new Promise(resolve =>
+        requestAnimationFrame(() =>
+          requestAnimationFrame(resolve)
+        )
+      );
+
+      await waitForPDFLogo();
+
+      if (document.fonts && document.fonts.ready) {
+        await document.fonts.ready;
+      }
+
+      pdfWrapper.style.display = "block";
+
+      const options = {
+        margin: [8, 8, 10, 8],
+
+        filename: filename,
+
+        image: {
+          type: "jpeg",
+          quality: 0.98
+        },
+
+        pagebreak: {
+          mode: ["css", "legacy"],
+          avoid: ["tr", "td", "th", ".pdf-signature"]
+        },
+
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          allowTaint: false,
+          backgroundColor: "#ffffff",
+          logging: false,
+          windowWidth: 1123,
+          scrollX: 0,
+          scrollY: 0,
+          x: 0,
+          y: 0,
+          removeContainer: true,
+          imageTimeout: 15000
+        },
+
+        jsPDF: {
+          unit: "mm",
+          format: "a4",
+          orientation: "landscape",
+          compress: true,
+          hotfixes: ["px_scaling"]
+        }
+      };
+
+      await html2pdf()
+        .set(options)
+        .from(pdfElement)
+        .save();
+
+      Swal.close();
+    } catch (error) {
+      console.error("PDF generation error:", error);
+
+      Swal.close();
+
+      Swal.fire(
+        "त्रुटि",
+        "PDF रिपोर्ट तयार गर्दा समस्या आयो। logo.png को स्थान र browser connection जाँच गर्नुहोस्।",
+        "error"
+      );
     }
   }
 </script>
+
 </body>
 </html>
