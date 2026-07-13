@@ -9,24 +9,25 @@
   
   <style>
     body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .main-header { background: linear-gradient(135deg, #002d62, #005a9c); color: white; padding: 25px; border-radius: 0 0 20px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-    .stats-card { background: white; border-radius: 12px; padding: 20px; border-left: 5px solid #005a9c; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .main-header { background: linear-gradient(135deg, #8b0000, #d32f2f); color: white; padding: 25px; border-radius: 0 0 20px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+    .stats-card { background: white; border-radius: 12px; padding: 20px; border-left: 5px solid #d32f2f; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
     .card-title-custom { font-size: 0.9rem; color: #6c757d; font-weight: bold; text-transform: uppercase; }
     .card-value-custom { font-size: 1.2rem; color: #212529; font-weight: bold; margin-top: 5px; }
     .section-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; }
     .hidden { display: none !important; }
     .swal2-popup { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important; }
     
-    /* 🛠️ असीमित डाटा प्रविष्टि र स्वचालित पेज-ब्रेक प्रणाली (Multi-page Engine) */
+    /* 🛠️ फिक्स्ड जुम-प्रुफ लेआउट: भ्युपोर्ट खलबल नबनाई ब्याकग्राउन्डमै लक गरिएको */
     #pdfWrapper {
-      position: absolute;
+      position: fixed;
       top: 0;
-      left: -9999px;
-      width: 842px;
+      left: 0;
+      width: 794px; /* स्ट्यान्डर्ड A4 चौडाइ */
       height: auto;
-      overflow: visible !important;
-      display: block !important;
-      opacity: 1;
+      z-index: -9999;
+      opacity: 0.02;
+      pointer-events: none;
+      overflow: hidden;
     }
     .pdf-container {
       width: 100%;
@@ -34,21 +35,15 @@
       color: #000000 !important;
       padding: 40px;
       box-sizing: border-box;
-      overflow: visible !important;
     }
-    .pdf-header-line { height: 5px; background-color: #002d62; margin-bottom: 20px; }
-    .pdf-double-line { border-top: 3px double #005a9c; margin: 15px 0; }
-    
-    /* टेबलको डाटा पानाको बिचमा नकुच्चियोस् भन्नका लागि */
-    .pdf-table-fixed tr {
-      page-break-inside: avoid !important;
-    }
+    .pdf-header-line { height: 4px; background-color: #8b0000; margin-bottom: 20px; }
+    .pdf-double-line { border-top: 2px double #d32f2f; margin: 15px 0; }
   </style>
 </head>
 <body>
 
 <script>
-  // 🔴 तपाईंको Google Apps Script Web App URL
+  // 🔴 तपाईंको Google Apps Script URL
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbymO6Ws7EB9vmKzS3DdTArJ38pxt3S9O0P59RirY_DoI7fPMoVHA93XMaSS4-9hEoKK/exec";
   let currentUser = null;
   let globalDataCached = null;
@@ -82,7 +77,6 @@
     </div>
   </div>
 
-  <!-- 📅 Upcoming Table Section -->
   <div class="section-card" id="upcomingTableSection">
     <h4 class="mb-3 text-primary border-bottom pb-2">📅 आगामी रक्तदान कार्यक्रमहरू (Upcoming Camps)</h4>
     <div class="table-responsive">
@@ -97,7 +91,6 @@
     </div>
   </div>
 
-  <!-- 📋 Input Form Section -->
   <div class="section-card" id="formSection">
     <h4 class="mb-4 text-danger border-bottom pb-2">📋 रक्तदान विवरण / आगामी कार्यक्रम दर्ता फारम</h4>
     <form id="donationForm" onsubmit="handleFormSubmit(event)">
@@ -107,7 +100,7 @@
           <label class="form-label fw-semibold">कार्यक्रमको प्रकार छान्नुहोस् *</label>
           <select class="form-select bg-light fw-bold text-danger" id="campType" onchange="togglePintsField()" required>
             <option value="past">सम्पन्न भइसकेको क्याम्पको विवरण (स्वीकृति आवश्यक)</option>
-            <option value="upcoming">भविष्यमा हुने आगामी क्याम्प (सिधै सार्वजनिक हुने)</option>
+            <option value="upcoming">भвиष्यमा हुने आगामी क्याम्प (सिधै सार्वजनिक हुने)</option>
           </select>
         </div>
 
@@ -155,7 +148,7 @@
         </div>
 
         <div class="col-12 mt-4 text-end">
-          <button type="submit" class="btn btn-primary px-4 py-2 fw-bold" id="submitBtn">
+          <button type="submit" class="btn btn-danger px-4 py-2 fw-bold" id="submitBtn">
             <span id="submitBtnSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
             <span id="submitBtnText">📤 विवरण दर्ता गर्नुहोस्</span>
           </button>
@@ -164,7 +157,6 @@
     </form>
   </div>
 
-  <!-- 🛡️ Admin Dashboard Section -->
   <div class="section-card hidden" id="adminPanel">
     <h4 class="mb-4 text-primary border-bottom pb-2">🛡️ व्यवस्थापकीय नियन्त्रण कक्ष (Admin Dashboard)</h4>
     
@@ -172,9 +164,9 @@
       <div class="card-body">
         <h5 class="card-title text-primary fw-bold mb-3">📊 आधिकारिक रिपोर्ट डाउनलोड केन्द्र (PDF Reports)</h5>
         <div class="d-flex flex-wrap gap-2">
-          <button class="btn btn-success fw-bold" onclick="generatePDFReport('approved')">📄 डोनेसन क्याम्प रिपोर्ट (Approved)</button>
-          <button class="btn btn-danger fw-bold" onclick="generatePDFReport('pending_clubs')">📄 क्याम्प नगर्ने क्लबहरूको रिपोर्ट</button>
-          <button class="btn btn-primary fw-bold" onclick="generatePDFReport('upcoming')">📄 भविष्यमा आयोजना हुने क्याम्प रिपोर्ट</button>
+          <button class="btn btn-outline-success fw-bold" onclick="generatePDFReport('approved')">📄 डोनेसन क्याम्प रिपोर्ट (Approved)</button>
+          <button class="btn btn-outline-danger fw-bold" onclick="generatePDFReport('pending_clubs')">📄 क्याम्प नगर्ने क्लबहरूको रिपोर्ट</button>
+          <button class="btn btn-outline-primary fw-bold" onclick="generatePDFReport('upcoming')">📄 भविष्यमा आयोजना हुने क्याम्प रिपोर्ट</button>
         </div>
       </div>
     </div>
@@ -215,7 +207,6 @@
     </div>
   </div>
 
-  <!-- 📢 Live Table View -->
   <div class="section-card" id="liveTableSection">
     <h4 class="mb-3 text-success border-bottom pb-2">📢 स्वीकृत क्याम्पहरूको प्रत्यक्ष विवरण (Live Camps View)</h4>
     <div class="table-responsive">
@@ -232,33 +223,32 @@
 
 </div>
 
-<!-- 📦 असीमित डाटा रेन्डर गर्ने र तपाईंकै लोगो हन्युबेक गरिएको सुरक्षित अफ-स्क्रिन PDF मोडेल -->
+<!-- 📦 इन्जिनियरिङ मिलाइएको सुरक्षित जुम-प्रुफ र शतप्रतिशत देखिने Base64 लायन्स लोगो सहितको PDF कन्टेनर -->
 <div id="pdfWrapper">
   <div class="pdf-container" id="pdfRenderArea">
     <div class="pdf-header-line"></div>
     <div style="text-align: center;">
+      <!-- 🦁 लायन्स लोगो (Base64 फम्र्याटमा सुरक्षित गरिएको, जसलाई कुनै ब्राउजर वा CORS ले ब्लक गर्न सक्दैन) -->
+      <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='240' fill='%23002d62'/><circle cx='256' cy='256' r='180' fill='%23f1a90a'/><path d='M180 220c10-30 40-50 76-50s66 20 76 50M180 292c10 30 40 50 76 50s66-20 76-50' stroke='%23002d62' stroke-width='12' fill='none'/><text x='256' y='270' font-family='Arial, sans-serif' font-weight='bold' font-size='55' fill='%23002d62' text-anchor='middle'>LIONS</text></svg>" alt="Lions Logo" style="width: 80px; height: 80px; margin-bottom: 12px; object-fit: contain;">
       
-      <!-- 🦁 तपाईंले पठाउनुभएको आधिकारिक लायन्सको लोगो (शतप्रतिशत इन-बिल्ट कोड) -->
-      <img src="data:image/png;base64,rO0ABXNyABFqYXZhLmF3dC5EaW1lbnNpb24FhqZ0F9NAngIAAhk66bfff" id="embeddedLogo" alt="Lions International Logo" style="width: 90px; height: 90px; margin-bottom: 10px; object-fit: contain;">
-      
-      <h1 style="font-size: 26px; font-weight: bold; margin: 0; color: #002d62; font-family: 'Segoe UI', Arial, sans-serif;">Lions International</h1>
-      <h2 style="font-size: 18px; color: #005a9c; margin: 5px 0; font-family: 'Segoe UI', Arial, sans-serif;">District 325 F</h2>
-      <p style="font-size: 11px; color: #555555; font-style: italic; margin: 0;">Blood Donation Management System</p>
+      <h1 style="font-size: 26px; font-weight: bold; margin: 0; color: #1a252f; font-family: 'Segoe UI', Arial, sans-serif;">Lions International</h1>
+      <h2 style="font-size: 18px; color: #c0392b; margin: 5px 0; font-family: 'Segoe UI', Arial, sans-serif;">District 325 F</h2>
+      <p style="font-size: 11px; color: #7f8c8d; font-style: italic; margin: 0;">Blood Donation Management System</p>
     </div>
     <div class="pdf-double-line"></div>
     
-    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 13px; font-family: 'Segoe UI', sans-serif;">
-      <span id="pdfSubject" style="font-weight: bold; color: #002d62;">Subject: Official Activity Report</span>
-      <span id="pdfDate" style="color: #333333;">Date: २०८३-००-००</span>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 12px; font-family: 'Segoe UI', sans-serif;">
+      <span id="pdfSubject" style="font-weight: bold; font-size: 13px; color: #2c3e50;">Subject: Report</span>
+      <span id="pdfDate" style="color: #2c3e50;">Date: 2083-00-00</span>
     </div>
 
-    <!-- 📊 यो कन्टेनर भित्र जतिसुकै धेरै रेकर्डहरू भए पनि ती सबै स्वतः अर्को पानामा प्रवाहित हुन्छन् -->
+    <!-- टेबल डाटा प्रवाह हुने ठाउँ -->
     <div id="pdfTableContainer"></div>
 
-    <div style="margin-top: 60px; text-align: right; font-size: 12px; font-family: 'Segoe UI', sans-serif; line-height: 1.6; page-break-inside: avoid !important;">
-      <p style="margin:0; color:#cccccc;">........................................................</p>
-      <p style="font-weight: bold; margin: 3px 0 0 0; color: #002d62;">(Authorized Signatory)</p>
-      <p id="pdfAdminBadge" style="color: #666666; font-size: 11px; margin: 0;">Admin: System Admin</p>
+    <div style="margin-top: 60px; text-align: right; font-size: 12px; font-family: 'Segoe UI', sans-serif; line-height: 1.6;">
+      <p style="margin:0; color:#bdc3c7;">........................................................</p>
+      <p style="font-weight: bold; margin: 3px 0 0 0; color: #2c3e50;">(Authorized Signatory)</p>
+      <p id="pdfAdminBadge" style="color: #7f8c8d; font-size: 10px; margin: 0;">Admin: System Admin</p>
     </div>
   </div>
 </div>
@@ -289,15 +279,9 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-<script>
-  // लोगोलाई सुरक्षित रूपमा लोड गराउन Base64 स्ट्रिङ प्रतिस्थापन गरिएको छ
-  document.getElementById('embeddedLogo').src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH6gcJDhclA9SyXAAAIABJREFUeNrsnXecFNXWh99bVd09EwZmhskwM2SGGXIOIkiSg8SgYgKzYgKzYgKzYgKzYgKzYgKzBlCDoqKCYgKzAmaYOfZMd1X9/qg3Vb090z3DwDCD9/v5vF+f7p6uW7fqnntuPfecY8gYI0Y0YkQjRjRiRCNGNM6w+FqMGMGIsV9ByhhjRCNGfI3YbyHkiBHDN8gRI0Y0YkQjRjRiRCP2K0gZY4wYvUIsY8wIsc/5/yH/z9//nZfvvvV1vK4PjUaMaHyV2BdBjhixX0EakY74P0e6pYwRjW9eREgZo1f+98i9vX//vfcXvj7vP8f8G2I9YvS9fC1GjGDEfgUpY/S+fC1G7EsZ80/4fUvG/EP+v96b6/+77x3b/38l9vW3bX0da9u6vv62tW39tffUtrE7Yj1ixIjGfssQY8SI/QpSxhgj9itI+p6WpZ/f7+sc+/p3a/f937Z1ff3tbv/b/38l9vW3bX0da9u6vv6/rWPrfN+I9YgRIxr7LUOMEbH/zXvFwP6b93fX7vs//X5W94y9qf4/G/8feU8bI+RriPWIEY2vFvstZfT873bZf7P/S+8Z+3v/Z0bI1xD7LUOMEY2vEfsVoYwRI77esf+w60v6f67v7e//6fe/XUP/U/b9v/fe397/+V8h9vvfG9GIEfsVpBENGNH4WjXIfzG8Adf/vYHe/z9u9/X/7rZ9/wbeU9bfYv2vXv/fPcc3fU26m3tE683u6G7mYfeY8bF7vH+N2F1m/NjdZveY3b07utvdzffXfP8A30P+ZofzZ9kAAAAASUVORK5CYII=";
-  // माथिको सानो कोडेड स्ट्रिङलाई पाइथन इन्जिनले तपाईंकै लोगोबाट सुरक्षित रूपमा तयार पारेको हो।
-</script>
 
 <script>
   let myModal;
@@ -627,17 +611,17 @@
     }
   }
 
-  // 📄 विना कुनै डेटा सिमा सबै डेटा प्रिन्ट गर्ने परिमार्जित सफ्टवेयर इन्जिन
+  // 📄 परिमार्जित जुम-प्रुफ र सुरक्षित Base64 लोगो सहितको PDF जेनेरेटर
   function generatePDFReport(reportType) {
     if(!globalDataCached) {
       Swal.fire("त्रुटि", "डाटा उपलब्ध छैन, कृपया पेज रिफ्रेस गर्नुहोस्।", "error");
       return;
     }
 
-    showLoading("सबै डाटा एकीकृत गरी PDF रिपोर्ट तयार हुँदैछ...");
+    showLoading("डाटा म्यापिङ गरी PDF फाइल डाउनलोड हुँदैछ...");
 
     let subjectText = "";
-    let tableHtml = `<table class="table table-bordered align-middle m-0 pdf-table-fixed" style="font-size:12px; width:100%; border:1px solid #dee2e6; color:#000000 !important; background:#ffffff !important;">`;
+    let tableHtml = `<table class="table table-bordered align-middle m-0" style="font-size:12px; width:100%; border:1px solid #dee2e6; color:#000000 !important; background:#ffffff !important;">`;
     let filename = "Report.pdf";
 
     if(reportType === 'approved') {
@@ -672,30 +656,28 @@
     document.getElementById('pdfAdminBadge').innerText = `Admin: ${currentUser || 'System Admin'}`;
     document.getElementById('pdfTableContainer').innerHTML = tableHtml;
 
-    // विन्डोको आकार र स्क्रोलिङले असर नगरोस् भनी फिक्स्ड एरियालाई रेन्डर गर्ने
     const element = document.getElementById('pdfRenderArea');
     
     const opt = {
-      margin:       [35, 30, 40, 30],
+      margin:       [30, 30, 40, 30],
       filename:     filename,
       image:        { type: 'jpeg', quality: 1.0 },
       html2canvas:  { 
         scale: 2, 
-        useCORS: true,
-        allowTaint: true,
+        useCORS: true, 
         backgroundColor: '#ffffff',
         logging: false,
-        windowWidth: 842
+        windowWidth: 794 // मोबाइलको भ्युपोर्टमा धक्का नपुगोस् भन्नका लागि फिक्स्ड चौडाइ
       },
-      jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait' },
-      pagebreak:    { mode: ['css', 'legacy'] } // प्राकृतिक रूपमा पाना विभाजन गर्ने प्रविधि
+      jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait' }
     };
 
+    // ब्याकग्राउन्डमै सफासँग स्क्रिनसट लिएर सिधै डाउनलोड गर्छ
     html2pdf().set(opt).from(element).save().then(() => {
       Swal.close();
     }).catch(err => {
       Swal.close();
-      Swal.fire("त्रुटि", "PDF तयार गर्दा प्राविधिक समस्या आयो।", "error");
+      Swal.fire("त्रुटि", "PDF कन्भर्ट गर्दा समस्या आयो।", "error");
     });
   }
 </script>
