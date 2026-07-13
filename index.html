@@ -17,12 +17,12 @@
     .hidden { display: none !important; }
     .swal2-popup { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important; }
     
-    /* 🛠️ फिक्स्ड जुम-प्रुफ लेआउट: भ्युपोर्ट खलबल नबनाई ब्याकग्राउन्डमै लक गरिएको */
+    /* 🛠️ फिक्स्ड जुम-प्रुफ लेआउट */
     #pdfWrapper {
       position: fixed;
       top: 0;
       left: 0;
-      width: 794px; /* स्ट्यान्डर्ड A4 चौडाइ */
+      width: 794px; /* A4 Width */
       height: auto;
       z-index: -9999;
       opacity: 0.02;
@@ -33,11 +33,17 @@
       width: 100%;
       background: #ffffff !important;
       color: #000000 !important;
-      padding: 20px 40px; /* हेडिङ माथि सार्न टप प्याडिङ घटाइयो */
+      padding: 20px 40px;
       box-sizing: border-box;
     }
     .pdf-header-line { height: 4px; background-color: #8b0000; margin-bottom: 15px; }
     .pdf-double-line { border-top: 2px double #d32f2f; margin: 15px 0; }
+
+    /* 🛡️ डाटा काटिनबाट जोगाउने CSS */
+    #pdfTableContainer table tr {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
   </style>
 </head>
 <body>
@@ -218,13 +224,13 @@
 
 </div>
 
-<!-- 📦 इन्जिनियरिङ मिलाइएको सुरक्षित जुम-प्रुफ र शतप्रतिशत देखिने Base64 लायन्स लोगो सहितको PDF कन्टेनर -->
+<!-- 📦 PDF कन्टेनर: नयाँ इमेज प्रिफेच सुनिश्चितता सहित -->
 <div id="pdfWrapper">
   <div class="pdf-container" id="pdfRenderArea">
     <div class="pdf-header-line"></div>
     <div style="text-align: center;">
-      <!-- 🦁 लायन्स लोगो (निर्मल सफा PNG Base64 मा रूपान्तरित, जसलाई कसैले ब्लक गर्न सक्दैन) -->
-      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5Z9KfAAAAnFBMVEUAAADu00T////u00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00S8p7G9AAAAK3RSTlMAgO/vECBw72BwQIDv77Cg0HCw0CCw77CgcICw72BgcGCw0HAwQLDQ0HAwQLBskmoAAAFDSURBVFjH7dXZkoMgEAZgByOisgSNo9mSOfv+72uDo8gwi9bMv8wFHz9VAUgp9S8Xp3H7fN8bpxVbH6I43fswR8u+XyH07V8gshm4vYwGvW+pY9+9E0bKOfWp7m8p5eY6pY8vCH0jsh64nQ9i38XUh+wYFpXwYorqPhXU70q5uS7r4xNEnwshC6gP2TEmSuEwNfUfCqrrUsqvax6XEDInEizOBlE6UqO6pY68mE2wOJuI/mAn9BvYw0Yp7Kembmbe6mwmFsczMWeGscv3wAisgXWwByZgAtY7wOqsW2AFrIM9MAGpA6bA6qx7YAWsgz0wAasfIKbA6qwNsALWwR6YgAnY7wGrs26BFbAO9sAEpA5YAn8fSMEEWIDv90fAAArwP4F+An1B6As+gX4b6NfU0XN99FwXPfWj897Y/wHw0w0TFAp4vAAAAABJRU5ErkJggg==" alt="Lions Logo" style="width: 70px; height: 70px; margin-bottom: 5px; object-fit: contain;">
+      <!-- 🦁 लायन्स लोगो (शतप्रतिशत रेन्डर ग्यारेन्टी भएको Base64 PNG) -->
+      <img id="pdfLogoImg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5Z9KfAAAAnFBMVEUAAADu00T////u00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00S8p7G9AAAAK3RSTlMAgO/vECBw72BwQIDv77Cg0HCw0CCw77CgcICw72BgcGCw0HAwQLDQ0HAwQLBskmoAAAFDSURBVFjH7dXZkoMgEAZgByOisgSNo9mSOf+72uDo8gwi9bMv8wFHz9VAUgp9S8Xp3H7fN8bpxVbH6I43fswR8u+XyH07V8gshm4vYwGvW+pY9+9E0bKOfWp7m8p5eY6pY8vCH0jsh64nQ9i38XUh+wYFpXwYorqPhXU70q5uS7r4xNEnwshC6gP2TEmSuEwNfUfCqrrUsqvax6XEDInEizOBlE6UqO6pY68mE2wOJuI/mAn9BvYw0Yp7Kembmbe6mwmFsczMWeGscv3wAisgXWwByZgAtY7wOqsW2AFrIM9MAGpA6bA6qx7YAWsgz0wAasfIKbA6qwNsALWwR6YgAnY7wGrs26BFbAO9sAEpA5YAn8fSMEEWIDv90fAAArwP4F+An1B6As+gX4b6NfU0XN99FwXPfWj897Y/wHw0w0TFAp4vAAAAABJRU5ErkJggg==" alt="Lions Logo" style="width: 70px; height: 70px; margin-bottom: 5px; object-fit: contain;">
       
       <h1 style="font-size: 24px; font-weight: bold; margin: 0; color: #1a252f; font-family: 'Segoe UI', Arial, sans-serif;">Lions International</h1>
       <h2 style="font-size: 16px; color: #c0392b; margin: 3px 0; font-family: 'Segoe UI', Arial, sans-serif;">District 325 F</h2>
@@ -610,7 +616,7 @@
     }
   }
 
-  // 📄 परिमार्जित जुम-प्रुफ र सुरक्षित Base64 लोगो सहितका सबै रेकर्डहरू देखाउने PDF जेनेरेटर
+  // 📄 परिमार्जित जुम-प्रुफ, थपिएको पेज-ब्रेक र ग्यारेन्टी लोगो सहितको PDF जेनेरेटर
   function generatePDFReport(reportType) {
     if(!globalDataCached) {
       Swal.fire("त्रुटि", "डाटा उपलब्ध छैन, कृपया पेज रिफ्रेस गर्नुहोस्।", "error");
@@ -628,7 +634,6 @@
       filename = "Approved_Camps_Report.pdf";
       tableHtml += `<thead style="background-color:#f1f3f5 !important; font-weight:bold;"><tr><th style="padding:8px; border:1px solid #dee2e6;">मिति (Date)</th><th style="padding:8px; border:1px solid #dee2e6;">आयोजक क्लब(हरू)</th><th style="padding:8px; border:1px solid #dee2e6;">सहयोगी संस्था</th><th style="padding:8px; border:1px solid #dee2e6;">स्थान</th><th style="padding:8px; border:1px solid #dee2e6;">पिन्ट</th></tr></thead><tbody>`;
       
-      // बिना कुनै सीमा (Limit) सबै डाटा लुप चलाउने सुरक्षित कोड
       if(globalDataCached.approvedRecords && globalDataCached.approvedRecords.length > 0) {
         globalDataCached.approvedRecords.forEach(r => {
           tableHtml += `<tr><td style="padding:8px; border:1px solid #dee2e6;">${r.date}</td><td style="padding:8px; border:1px solid #dee2e6;"><b>${r.clubs}</b></td><td style="padding:8px; border:1px solid #dee2e6;">${r.partner}</td><td style="padding:8px; border:1px solid #dee2e6;">${r.location}</td><td style="padding:8px; border:1px solid #dee2e6; color:#d32f2f; font-weight:bold;">${r.pints} Pin</td></tr>`;
@@ -671,28 +676,42 @@
     document.getElementById('pdfAdminBadge').innerText = `Admin: ${currentUser || 'System Admin'}`;
     document.getElementById('pdfTableContainer').innerHTML = tableHtml;
 
+    // लोगो इमेज पूर्ण रूपमा लोड भएको सुनिश्चित गर्न इमेज एलिमेन्टलाई प्रिफेच ट्यागिङ
+    const logoImg = document.getElementById('pdfLogoImg');
     const element = document.getElementById('pdfRenderArea');
     
     const opt = {
-      margin:       [15, 30, 30, 30], /* माथिको खाली भाग घटाएर हेडिङलाई मिलाइयो */
+      margin:       [15, 30, 30, 30],
       filename:     filename,
       image:        { type: 'jpeg', quality: 1.0 },
+      // 🛡️ पेजको बीचमा टेबल रो (Row) काटिनबाट रोक्ने मोड
+      pagebreak:    { mode: ['css', 'legacy'], avoid: 'tr' },
       html2canvas:  { 
         scale: 2, 
         useCORS: true, 
         backgroundColor: '#ffffff',
         logging: false,
-        windowWidth: 794
+        windowWidth: 794,
+        delay: 500 // 🛑 लोगो रेन्डर हुन र इमेज कम्प्लिट हुन आधा सेकेन्डको बफर टाइम थपियो
       },
       jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait' }
     };
 
-    html2pdf().set(opt).from(element).save().then(() => {
-      Swal.close();
-    }).catch(err => {
-      Swal.close();
-      Swal.fire("त्रुटि", "PDF कन्भर्ट गर्दा समस्या आयो।", "error");
-    });
+    // इमेज कम्प्लिट भएपछि मात्र डाउनलोड ट्रिगर गर्ने सुरक्षित तरिका
+    const triggerDownload = () => {
+      html2pdf().set(opt).from(element).save().then(() => {
+        Swal.close();
+      }).catch(err => {
+        Swal.close();
+        Swal.fire("त्रुटि", "PDF कन्भर्ट गर्दा समस्या आयो।", "error");
+      });
+    };
+
+    if (logoImg.complete) {
+      setTimeout(triggerDownload, 100);
+    } else {
+      logoImg.onload = triggerDownload;
+    }
   }
 </script>
 </body>
