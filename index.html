@@ -16,6 +16,11 @@
     .section-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; }
     .hidden { display: none !important; }
     .swal2-popup { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important; }
+    
+    /* PDF जेनेरेसनका लागि ब्याकग्राउन्ड टेम्प्लेट */
+    #pdfRenderArea { padding: 40px; background: white; color: #212529; width: 790px; position: absolute; left: -9999px; top: -9999px; }
+    .pdf-header-line { height: 4px; background-color: #8b0000; margin-bottom: 20px; }
+    .pdf-double-line { border-top: 2px double #d32f2f; margin: 15px 0; }
   </style>
 </head>
 <body>
@@ -78,7 +83,7 @@
           <label class="form-label fw-semibold">कार्यक्रमको प्रकार छान्नुहोस् *</label>
           <select class="form-select bg-light fw-bold text-danger" id="campType" onchange="togglePintsField()" required>
             <option value="past">सम्पन्न भइसकेको क्याम्पको विवरण (स्वीकृति आवश्यक)</option>
-            <option value="upcoming">भविष्यमा हुने आगामी क्याम्प (सिधै सार्वजनिक हुने)</option>
+            <option value="upcoming">भвиष्यमा हुने आगामी क्याम्प (सिधै सार्वजनिक हुने)</option>
           </select>
         </div>
 
@@ -201,6 +206,30 @@
 
 </div>
 
+<!-- 📦 ब्याकग्राउन्डमा रहने हिडन HTML क्षेत्र जसलाई सिधै इमेज टु PDF बनाइन्छ -->
+<div id="pdfRenderArea">
+  <div class="pdf-header-line"></div>
+  <div class="text-center">
+    <h1 style="font-size: 26px; font-weight: bold; margin: 0; color: #1a252f;">Lions International</h1>
+    <h2 style="font-size: 18px; color: #c0392b; margin: 5px 0;">District 325 F</h2>
+    <p style="font-size: 12px; color: #7f8c8d; font-style: italic; margin: 0;">Blood Donation Management System</p>
+  </div>
+  <div class="pdf-double-line"></div>
+  
+  <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 12px;">
+    <span id="pdfSubject" style="font-weight: bold; font-size: 14px;">Subject: Report</span>
+    <span id="pdfDate">Date: 2083-00-00</span>
+  </div>
+
+  <div id="pdfTableContainer"></div>
+
+  <div style="margin-top: 60px; text-align: right; font-size: 13px;">
+    <p>........................................................</p>
+    <p style="font-weight: bold; margin: 2px 0;">(Authorized Signatory)</p>
+    <p id="pdfAdminBadge" style="color: #7f8c8d; font-size: 11px; margin: 0;">Admin: System</p>
+  </div>
+</div>
+
 <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -230,9 +259,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- 🔴 PDF पुस्तकालयहरू -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf-autotable.min.js"></script>
+<!-- 🔥 नेपाली फन्ट अड्किने समस्या समाधान गर्न भिजुअल कन्भर्टर लाइब्रेरी थपिएको छ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
   let myModal;
@@ -562,138 +590,69 @@
     }
   }
 
-  // 📄 १००% फिक्स गरिएको सुपर-फास्ट PDF जेनेरेटर फङ्सन
+  // 📄 नयाँ शक्तिशाली भिजुअल PDF जेनेरेटर (नेपाली फन्ट सपोर्टेड र क्र्यास नहुने)
   function generatePDFReport(reportType) {
     if(!globalDataCached) {
-      Swal.fire("त्रुटि", "डाटा उपलब्ध छैन, कृपया सिस्टम पुनः रिफ्रेस गर्नुहोस्।", "error");
+      Swal.fire("त्रुटि", "डाटा उपलब्ध छैन, कृपया पेज रिफ्रेस गर्नुहोस्।", "error");
       return;
     }
 
-    showLoading("PDF तयार हुदै कृपया पर्खनुहोस्.......");
-
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('p', 'pt', 'a4');
+    showLoading("नेपाली फन्ट म्यापिङ सहित PDF तयार हुँदैछ...");
 
     let subjectText = "";
-    let columns = [];
-    let rows = [];
-    let filename = "report.pdf";
+    let tableHtml = `<table class="table table-bordered table-striped m-0" style="font-size:12px; width:100%;">`;
+    let filename = "Report.pdf";
 
-    // टेबुल डेटालाई अंग्रेजी ढाँचामा लगिएकाले फन्ट अड्किने छैन
     if(reportType === 'approved') {
       subjectText = "Subject: Blood Donation Camps Report (Approved)";
       filename = "Approved_Camps_Report.pdf";
-      columns = ["Date", "Organizer Club(s)", "Partner Organization", "Location", "Pints"];
+      tableHtml += `<thead class="table-light"><tr><th>मिति (Date)</th><th>आयोजक क्लब(हरू)</th><th>सहयोगी संस्था</th><th>स्थान</th><th>पिन्ट</th></tr></thead><tbody>`;
       globalDataCached.approvedRecords.forEach(r => {
-        rows.push([r.date, r.clubs, r.partner, r.location, `${r.pints} Pints`]);
+        tableHtml += `<tr><td>${r.date}</td><td><b>${r.clubs}</b></td><td>${r.partner}</td><td>${r.location}</td><td style="color:#d32f2f; font-weight:bold;">${r.pints} Pin</td></tr>`;
       });
     } 
     else if(reportType === 'pending_clubs') {
       subjectText = "Subject: Non-Participating Clubs List";
       filename = "Non_Participating_Clubs_Report.pdf";
-      columns = ["S.N.", "Club Name", "Status"];
+      tableHtml += `<thead class="table-light"><tr><th style="width:10%;">क्र.सं.</th><th>क्लबको नाम (Club Name)</th><th>स्थिति (Status)</th></tr></thead><tbody>`;
       globalDataCached.pendingClubs.forEach((c, index) => {
-        rows.push([index + 1, c, "Pending"]);
+        tableHtml += `<tr><td>${index + 1}</td><td><b>${c}</b></td><td class="text-danger">Pending</td></tr>`;
       });
     } 
     else if(reportType === 'upcoming') {
       subjectText = "Subject: Upcoming Blood Donation Camps Report";
       filename = "Upcoming_Camps_Report.pdf";
-      columns = ["Date", "Organizer Club(s)", "Partner Organization", "Location & Time"];
+      tableHtml += `<thead class="table-light"><tr><th>मिति</th><th>आयोजक क्लब(हरू)</th><th>सहयोगी संस्था</th><th>स्थान र समय</th></tr></thead><tbody>`;
       globalDataCached.upcomingRecords.forEach(r => {
-        rows.push([r.date, r.clubs, r.partner, `${r.location} (${r.time})`]);
+        tableHtml += `<tr><td>${r.date}</td><td><b>${r.clubs}</b></td><td>${r.partner}</td><td>${r.location} (${r.time})</td></tr>`;
       });
     }
+    tableHtml += `</tbody></table>`;
 
+    // हिडन एरियामा डाटा इन्जेक्ट गर्ने
     let today = new Date();
-    let dateStr = `Report Date: ${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-    let adminUser = `Admin: ${currentUser || 'System Admin'}`;
+    document.getElementById('pdfSubject').innerText = subjectText;
+    document.getElementById('pdfDate').innerText = `Report Date: ${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    document.getElementById('pdfAdminBadge').innerText = `Admin: ${currentUser || 'System Admin'}`;
+    document.getElementById('pdfTableContainer').innerHTML = tableHtml;
 
-    const drawHeaderAndFooter = (data) => {
-      doc.setFillColor(139, 0, 0);
-      doc.rect(40, 30, 515, 4, 'F');
-
-      doc.setTextColor(26, 37, 47);
-      doc.setFont("Helvetica", "bold");
-      doc.setFontSize(22);
-      doc.text("Lions International", 297, 60, { align: "center" });
-
-      doc.setTextColor(192, 57, 43);
-      doc.setFontSize(16);
-      doc.text("District 325 F", 297, 80, { align: "center" });
-
-      doc.setTextColor(127, 140, 141);
-      doc.setFont("Helvetica", "italic");
-      doc.setFontSize(10);
-      doc.text("Blood Donation Management System", 297, 95, { align: "center" });
-
-      doc.setDrawColor(211, 47, 47);
-      doc.setLineWidth(1);
-      doc.line(40, 105, 555, 105);
-      doc.line(40, 108, 555, 108);
-
-      doc.setTextColor(44, 62, 80);
-      doc.setFont("Helvetica", "normal");
-      doc.setFontSize(10);
-      doc.text(dateStr, 555, 125, { align: "right" });
-
-      doc.setFont("Helvetica", "bold");
-      doc.setFontSize(12);
-      doc.text(subjectText, 297, 145, { align: "center" });
+    // html2pdf को कन्फिगरेशन
+    const element = document.getElementById('pdfRenderArea');
+    const opt = {
+      margin:       [30, 30, 40, 30],
+      filename:     filename,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+      jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait' }
     };
 
-    doc.autoTable({
-      head: [columns],
-      body: rows,
-      startY: 165,
-      margin: { top: 165, bottom: 80, left: 40, right: 40 },
-      styles: {
-        font: "Helvetica",
-        fontSize: 10,
-        cellPadding: 6,
-        lineColor: [221, 221, 221],
-        lineWidth: 0.5,
-        valign: 'middle'
-      },
-      headStyles: {
-        fillColor: [242, 242, 242],
-        textColor: [51, 51, 51],
-        fontStyle: 'bold',
-        lineWidth: 1,
-        lineColor: [51, 51, 51]
-      },
-      columnStyles: {
-        0: { cellWidth: 70 },
-        1: { fontStyle: 'bold', cellWidth: 150 },
-        4: { fontStyle: 'bold', textColor: [192, 57, 43] }
-      },
-      didDrawPage: drawHeaderAndFooter
-    });
-
-    let finalY = doc.lastAutoTable.cursor.y + 40;
-    
-    if (finalY > 750) {
-      doc.addPage();
-      drawHeaderAndFooter();
-      finalY = 180;
-    }
-
-    doc.setTextColor(44, 62, 80);
-    doc.setFont("Helvetica", "normal");
-    doc.setFontSize(11);
-    doc.text("........................................................", 555, finalY, { align: "right" });
-    doc.setFont("Helvetica", "bold");
-    doc.text("(Authorized Signatory)", 555, finalY + 20, { align: "right" });
-    doc.setFont("Helvetica", "normal");
-    doc.setFontSize(9);
-    doc.setTextColor(127, 140, 141);
-    doc.text(adminUser, 555, finalY + 35, { align: "right" });
-
-    // डाउनलोडिङ स्पिडलाई अधिकतम तीव्र बनाइएको छ (२५ मिलिसेकेन्ड)
-    setTimeout(() => {
-      doc.save(filename);
+    // रेन्डर र सेभ गर्ने प्रक्रिया
+    html2pdf().set(opt).from(element).save().then(() => {
       Swal.close();
-    }, 25);
+    }).catch(err => {
+      Swal.close();
+      Swal.fire("त्रुटि", "PDF कन्भर्ट गर्दा प्राविधिक समस्या आयो।", "error");
+    });
   }
 </script>
 </body>
