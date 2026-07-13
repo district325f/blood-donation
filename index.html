@@ -490,6 +490,93 @@
     }
   }
 
+
+  /* =========================================================
+     DASHBOARD TOP CLUB STATISTICS — FAIR AGGREGATE LOGIC
+     Approved records बाट मात्र गणना हुन्छ।
+     Backend/Sheet logic परिवर्तन गरिएको छैन।
+  ========================================================= */
+
+  function normalizeClubList(clubsValue) {
+    return String(clubsValue || "")
+      .split(/[,;\n]+/)
+      .map(name => name.trim())
+      .filter(Boolean);
+  }
+
+  function parsePintsValue(value) {
+    const cleaned = String(value ?? "")
+      .replace(/,/g, "")
+      .match(/-?\d+(\.\d+)?/);
+
+    const numberValue = cleaned ? Number(cleaned[0]) : 0;
+    return Number.isFinite(numberValue) ? numberValue : 0;
+  }
+
+  function calculateDashboardStats(approvedRecords) {
+    const campCounts = {};
+    const pintTotals = {};
+
+    (approvedRecords || []).forEach(record => {
+      /*
+       * एउटै record मा एउटै club दोहोरिए पनि एकपटक मात्र गन्ने।
+       * धेरै आयोजक क्लब भए प्रत्येक आयोजक क्लबको योगदानमा उक्त camp समावेश हुन्छ।
+       */
+      const clubs = [...new Set(normalizeClubList(record.clubs))];
+      const pints = parsePintsValue(record.pints);
+
+      clubs.forEach(club => {
+        campCounts[club] = (campCounts[club] || 0) + 1;
+        pintTotals[club] = (pintTotals[club] || 0) + pints;
+      });
+    });
+
+    const campEntries = Object.entries(campCounts);
+    const highestCampCount = campEntries.length
+      ? Math.max(...campEntries.map(([, count]) => count))
+      : 0;
+
+    let topCampText =
+      "हाल कुनै पनि क्लबले एकभन्दा बढी रक्तदान कार्यक्रम आयोजना गरेको छैन ।";
+
+    if (highestCampCount > 1) {
+      const topCampClubs = campEntries
+        .filter(([, count]) => count === highestCampCount)
+        .map(([club]) => club)
+        .sort((a, b) => a.localeCompare(b));
+
+      topCampText =
+        `${topCampClubs.join(", ")} (${highestCampCount} पटक)`;
+    }
+
+    const pintEntries = Object.entries(pintTotals);
+    const highestPintTotal = pintEntries.length
+      ? Math.max(...pintEntries.map(([, total]) => total))
+      : 0;
+
+    let topPintText =
+      "हालसम्म कुनै रक्तदान पिन्ट विवरण उपलब्ध छैन ।";
+
+    if (highestPintTotal > 0) {
+      const topPintClubs = pintEntries
+        .filter(([, total]) => total === highestPintTotal)
+        .map(([club]) => club)
+        .sort((a, b) => a.localeCompare(b));
+
+      const displayPints = Number.isInteger(highestPintTotal)
+        ? highestPintTotal
+        : highestPintTotal.toFixed(2);
+
+      topPintText =
+        `${topPintClubs.join(", ")} (${displayPints} पिन्ट)`;
+    }
+
+    return {
+      topCampClub: topCampText,
+      topPintClub: topPintText
+    };
+  }
+
   function loadSystemData() {
     fetch(WEB_APP_URL, {
       method: "POST",
@@ -511,8 +598,17 @@
         select.appendChild(opt);
       });
 
-      document.getElementById('statTopCamp').innerText = data.stats.topCampClub;
-      document.getElementById('statTopPint').innerText = data.stats.topPintClub;
+      /*
+       * Dashboard statistics approved records बाट fair aggregate logic अनुसार।
+       * Backend बाट आएको data.stats लाई छोएको छैन; display मात्र यहाँ गणना हुन्छ।
+       */
+      const calculatedStats = calculateDashboardStats(data.approvedRecords);
+
+      document.getElementById('statTopCamp').innerText =
+        calculatedStats.topCampClub;
+
+      document.getElementById('statTopPint').innerText =
+        calculatedStats.topPintClub;
 
       renderUpcomingTable(data.upcomingRecords);
       renderLiveTable(data.approvedRecords);
