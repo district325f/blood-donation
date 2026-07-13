@@ -60,104 +60,6 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
     }
 
-    /* =====================================================
-       PDF REPORT ONLY — FINAL FIXED LAYOUT
-       मुख्य सिस्टमको डिजाइन/फङ्सनमा असर गर्दैन
-    ===================================================== */
-
-    #pdfWrapper {
-      position: absolute;
-      top: 0;
-      left: -12000px;
-      width: 1123px;
-      height: auto;
-      z-index: -9999;
-      opacity: 1;
-      visibility: visible;
-      pointer-events: none;
-      overflow: visible;
-      background: #ffffff;
-    }
-
-    .pdf-container {
-      width: 1123px;
-      min-height: auto;
-      background: #ffffff !important;
-      color: #000000 !important;
-      padding: 18px 28px 25px 28px;
-      margin: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    .pdf-header-line {
-      width: 100%;
-      height: 4px;
-      background-color: #8b0000;
-      margin: 0 0 8px 0;
-    }
-
-    .pdf-double-line {
-      width: 100%;
-      border-top: 2px solid #d32f2f;
-      margin: 8px 0 10px 0;
-    }
-
-    #pdfTableContainer {
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: visible;
-    }
-
-    #pdfTableContainer table {
-      width: 100% !important;
-      table-layout: fixed !important;
-      border-collapse: collapse !important;
-      border-spacing: 0 !important;
-      margin: 0 !important;
-      background: #ffffff !important;
-      color: #000000 !important;
-      font-size: 11px !important;
-    }
-
-    #pdfTableContainer thead {
-      display: table-header-group !important;
-    }
-
-    #pdfTableContainer tbody {
-      display: table-row-group !important;
-    }
-
-    #pdfTableContainer tr {
-      page-break-inside: avoid !important;
-      break-inside: avoid-page !important;
-      break-inside: avoid !important;
-    }
-
-    #pdfTableContainer th,
-    #pdfTableContainer td {
-      border: 1px solid #cfd4da !important;
-      padding: 6px 7px !important;
-      vertical-align: middle !important;
-      white-space: normal !important;
-      overflow-wrap: anywhere !important;
-      word-wrap: break-word !important;
-      word-break: normal !important;
-      line-height: 1.35 !important;
-      background-clip: padding-box !important;
-    }
-
-    #pdfTableContainer th {
-      background-color: #eef1f4 !important;
-      font-weight: 700 !important;
-      color: #1a252f !important;
-    }
-
-    .pdf-signature {
-      page-break-inside: avoid !important;
-      break-inside: avoid !important;
-    }
   </style>
 </head>
 
@@ -476,146 +378,6 @@
 
 </div>
 
-<!-- =====================================================
-     PDF REPORT CONTAINER
-     GitHub root मा logo.png हुनुपर्छ
-====================================================== -->
-<div id="pdfWrapper">
-  <div class="pdf-container" id="pdfRenderArea">
-
-    <div class="pdf-header-line"></div>
-
-    <div style="
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      position:relative;
-      min-height:76px;
-      margin:0;
-      padding:0;
-    ">
-
-      <img
-        id="pdfLogoImg"
-        src="logo.png"
-        alt="Lions Logo"
-        crossorigin="anonymous"
-        style="
-          position:absolute;
-          left:8px;
-          top:2px;
-          width:70px;
-          height:70px;
-          object-fit:contain;
-          display:block;
-        ">
-
-      <div style="text-align:center; width:100%; margin:0; padding:0;">
-        <h1 style="
-          font-size:24px;
-          font-weight:700;
-          margin:0;
-          line-height:1.15;
-          color:#1a252f;
-          font-family:'Segoe UI', Arial, sans-serif;
-        ">
-          Lions International
-        </h1>
-
-        <h2 style="
-          font-size:17px;
-          font-weight:600;
-          color:#c0392b;
-          margin:3px 0 1px 0;
-          line-height:1.2;
-          font-family:'Segoe UI', Arial, sans-serif;
-        ">
-          District 325 F
-        </h2>
-
-        <p style="
-          font-size:11px;
-          color:#7f8c8d;
-          font-style:italic;
-          margin:2px 0 0 0;
-          line-height:1.2;
-        ">
-          Blood Donation Management System
-        </p>
-      </div>
-    </div>
-
-    <div class="pdf-double-line"></div>
-
-    <div style="
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      width:100%;
-      margin:0 0 9px 0;
-      padding:0;
-      font-size:11px;
-      font-family:'Segoe UI', sans-serif;
-    ">
-      <span
-        id="pdfSubject"
-        style="
-          font-weight:700;
-          font-size:12px;
-          color:#2c3e50;
-        ">
-        Subject: Report
-      </span>
-
-      <span
-        id="pdfDate"
-        style="
-          color:#2c3e50;
-          white-space:nowrap;
-        ">
-        Report Date:
-      </span>
-    </div>
-
-    <div id="pdfTableContainer"></div>
-
-    <div
-      class="pdf-signature"
-      style="
-        margin-top:22px;
-        padding-top:4px;
-        text-align:right;
-        font-size:11px;
-        font-family:'Segoe UI', sans-serif;
-        line-height:1.4;
-      ">
-
-      <p style="margin:0; color:#9aa0a6;">
-        ........................................................
-      </p>
-
-      <p style="
-        font-weight:700;
-        margin:2px 0 0 0;
-        color:#2c3e50;
-      ">
-        (Authorized Signatory)
-      </p>
-
-      <p
-        id="pdfAdminBadge"
-        style="
-          color:#7f8c8d;
-          font-size:9px;
-          margin:0;
-        ">
-        Admin: System Admin
-      </p>
-    </div>
-
-  </div>
-</div>
-
 <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -666,7 +428,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/vfs_fonts.js"></script>
 
 <script>
   let myModal;
@@ -1204,67 +967,248 @@
     });
   }
 
-  /* =====================================================
-     PDF HELPER FUNCTIONS
-  ===================================================== */
 
-  function escapePDFHtml(value) {
-    return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+  /* =========================================================
+     REAL TEXT PDF REPORT SYSTEM
+     Logo मात्र image हुन्छ।
+     Heading, table र data वास्तविक selectable PDF text हुन्छ।
+  ========================================================= */
+
+  let pdfFontReady = false;
+
+  function pdfValue(value) {
+    return value === null || value === undefined ? "" : String(value);
   }
 
-  async function waitForPDFLogo() {
-    const logoImg = document.getElementById("pdfLogoImg");
+  async function fileToBase64(url) {
+    const response = await fetch(url, { cache: "no-store" });
 
-    if (!logoImg) {
-      throw new Error("PDF logo element not found.");
+    if (!response.ok) {
+      throw new Error(`File load failed: ${response.status}`);
     }
 
-    logoImg.style.visibility = "visible";
+    const blob = await response.blob();
 
-    const sourceAttribute = logoImg.getAttribute("src") || "logo.png";
-    const absoluteSource = new URL(sourceAttribute, window.location.href).href;
-    const separator = absoluteSource.includes("?") ? "&" : "?";
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
 
-    logoImg.src =
-      absoluteSource +
-      separator +
-      "pdfCache=" +
-      Date.now();
+      reader.onloadend = () => {
+        const result = String(reader.result || "");
+        resolve(result.split(",")[1] || "");
+      };
 
-    try {
-      if (typeof logoImg.decode === "function") {
-        await logoImg.decode();
-      } else {
-        await new Promise((resolve, reject) => {
-          logoImg.onload = resolve;
-          logoImg.onerror = reject;
-        });
-      }
-
-      if (!logoImg.naturalWidth || !logoImg.naturalHeight) {
-        throw new Error("Logo image has invalid dimensions.");
-      }
-
-      return true;
-    } catch (error) {
-      console.error("PDF logo load error:", error);
-
-      /*
-       * Logo load नभए पनि PDF download रोकिन्न।
-       */
-      logoImg.style.visibility = "hidden";
-      return false;
-    }
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   }
 
-  /* =====================================================
-     PDF REPORT GENERATOR — FINAL FIXED VERSION
-  ===================================================== */
+  async function imageToDataUrl(url) {
+    const response = await fetch(url, { cache: "no-store" });
+
+    if (!response.ok) {
+      throw new Error(`Logo load failed: ${response.status}`);
+    }
+
+    const blob = await response.blob();
+
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  async function preparePdfFont() {
+    if (pdfFontReady) return;
+
+    const fontUrl = new URL(
+      "NotoSansDevanagari-Regular.ttf",
+      window.location.href
+    ).href;
+
+    const fontBase64 = await fileToBase64(
+      fontUrl + "?v=" + Date.now()
+    );
+
+    pdfMake.vfs["NotoSansDevanagari-Regular.ttf"] = fontBase64;
+
+    pdfMake.fonts = {
+      NotoDevanagari: {
+        normal: "NotoSansDevanagari-Regular.ttf",
+        bold: "NotoSansDevanagari-Regular.ttf",
+        italics: "NotoSansDevanagari-Regular.ttf",
+        bolditalics: "NotoSansDevanagari-Regular.ttf"
+      }
+    };
+
+    pdfFontReady = true;
+  }
+
+  function getPdfTableLayout() {
+    return {
+      hLineWidth: function () { return 0.7; },
+      vLineWidth: function () { return 0.7; },
+      hLineColor: function () { return "#c8cdd2"; },
+      vLineColor: function () { return "#c8cdd2"; },
+      paddingLeft: function () { return 5; },
+      paddingRight: function () { return 5; },
+      paddingTop: function () { return 4; },
+      paddingBottom: function () { return 4; },
+      fillColor: function (rowIndex) {
+        return rowIndex === 0 ? "#eef1f4" : null;
+      }
+    };
+  }
+
+  function createApprovedTable() {
+    const body = [
+      [
+        { text: "मिति (Date)", bold: true },
+        { text: "आयोजक क्लब(हरू)", bold: true },
+        { text: "सहयोगी संस्था", bold: true },
+        { text: "स्थान", bold: true },
+        { text: "पिन्ट", bold: true, alignment: "center" }
+      ]
+    ];
+
+    const records = globalDataCached.approvedRecords || [];
+
+    if (records.length === 0) {
+      body.push([
+        {
+          text: "कुनै पनि डाटा उपलब्ध छैन",
+          colSpan: 5,
+          alignment: "center",
+          margin: [0, 8, 0, 8]
+        },
+        {}, {}, {}, {}
+      ]);
+    } else {
+      records.forEach(r => {
+        body.push([
+          { text: pdfValue(r.date) },
+          { text: pdfValue(r.clubs), bold: true },
+          { text: pdfValue(r.partner) },
+          { text: pdfValue(r.location) },
+          {
+            text: `${pdfValue(r.pints)} Pin`,
+            bold: true,
+            color: "#d32f2f",
+            alignment: "center",
+            noWrap: true
+          }
+        ]);
+      });
+    }
+
+    return {
+      table: {
+        headerRows: 1,
+        dontBreakRows: true,
+        keepWithHeaderRows: 1,
+        widths: ["13%", "24%", "29%", "25%", "9%"],
+        body: body
+      },
+      layout: getPdfTableLayout()
+    };
+  }
+
+  function createPendingClubsTable() {
+    const body = [
+      [
+        { text: "क्र.सं.", bold: true, alignment: "center" },
+        { text: "क्लबको नाम (Club Name)", bold: true },
+        { text: "स्थिति (Status)", bold: true, alignment: "center" }
+      ]
+    ];
+
+    const clubs = globalDataCached.pendingClubs || [];
+
+    if (clubs.length === 0) {
+      body.push([
+        {
+          text: "कुनै पनि डाटा उपलब्ध छैन",
+          colSpan: 3,
+          alignment: "center",
+          margin: [0, 8, 0, 8]
+        },
+        {}, {}
+      ]);
+    } else {
+      clubs.forEach((club, index) => {
+        body.push([
+          { text: String(index + 1), alignment: "center" },
+          { text: pdfValue(club), bold: true },
+          {
+            text: "Pending",
+            bold: true,
+            color: "#d32f2f",
+            alignment: "center"
+          }
+        ]);
+      });
+    }
+
+    return {
+      table: {
+        headerRows: 1,
+        dontBreakRows: true,
+        keepWithHeaderRows: 1,
+        widths: ["12%", "63%", "25%"],
+        body: body
+      },
+      layout: getPdfTableLayout()
+    };
+  }
+
+  function createUpcomingTable() {
+    const body = [
+      [
+        { text: "मिति", bold: true },
+        { text: "आयोजक क्लब(हरू)", bold: true },
+        { text: "सहयोगी संस्था", bold: true },
+        { text: "स्थान र समय", bold: true }
+      ]
+    ];
+
+    const records = globalDataCached.upcomingRecords || [];
+
+    if (records.length === 0) {
+      body.push([
+        {
+          text: "कुनै पनि डाटा उपलब्ध छैन",
+          colSpan: 4,
+          alignment: "center",
+          margin: [0, 8, 0, 8]
+        },
+        {}, {}, {}
+      ]);
+    } else {
+      records.forEach(r => {
+        const locationAndTime =
+          `${pdfValue(r.location)}${r.time ? " (" + pdfValue(r.time) + ")" : ""}`;
+
+        body.push([
+          { text: pdfValue(r.date) },
+          { text: pdfValue(r.clubs), bold: true },
+          { text: pdfValue(r.partner) },
+          { text: locationAndTime }
+        ]);
+      });
+    }
+
+    return {
+      table: {
+        headerRows: 1,
+        dontBreakRows: true,
+        keepWithHeaderRows: 1,
+        widths: ["14%", "27%", "30%", "29%"],
+        body: body
+      },
+      layout: getPdfTableLayout()
+    };
+  }
 
   async function generatePDFReport(reportType) {
     if (!globalDataCached) {
@@ -1276,216 +1220,42 @@
       return;
     }
 
-    showLoading("रिपोर्ट तयार गरी PDF डाउनलोड हुँदैछ...");
-
-    const pdfWrapper = document.getElementById("pdfWrapper");
-    const pdfElement = document.getElementById("pdfRenderArea");
-    const pdfTableContainer = document.getElementById("pdfTableContainer");
-    const logoImg = document.getElementById("pdfLogoImg");
-
-    let subjectText = "";
-    let filename = "Report.pdf";
-    let tableHtml = "";
+    showLoading("वास्तविक text र table सहित PDF तयार हुँदैछ...");
 
     try {
-      logoImg.style.visibility = "visible";
+      await preparePdfFont();
+
+      let logoDataUrl = null;
+
+      try {
+        const logoUrl = new URL("logo.png", window.location.href).href;
+        logoDataUrl = await imageToDataUrl(
+          logoUrl + "?v=" + Date.now()
+        );
+      } catch (logoError) {
+        console.error("Logo load error:", logoError);
+      }
+
+      let subjectText = "";
+      let filename = "Blood_Report.pdf";
+      let reportTable;
 
       if (reportType === "approved") {
         subjectText = "Subject: Blood Donation Camps Report (Approved)";
         filename = "Approved_Camps_Report.pdf";
-
-        tableHtml = `
-          <table>
-            <colgroup>
-              <col style="width:13%;">
-              <col style="width:24%;">
-              <col style="width:29%;">
-              <col style="width:25%;">
-              <col style="width:9%;">
-            </colgroup>
-
-            <thead>
-              <tr>
-                <th>मिति (Date)</th>
-                <th>आयोजक क्लब(हरू)</th>
-                <th>सहयोगी संस्था</th>
-                <th>स्थान</th>
-                <th style="text-align:center;">पिन्ट</th>
-              </tr>
-            </thead>
-
-            <tbody>
-        `;
-
-        if (
-          globalDataCached.approvedRecords &&
-          globalDataCached.approvedRecords.length > 0
-        ) {
-          globalDataCached.approvedRecords.forEach(r => {
-            tableHtml += `
-              <tr>
-                <td>${escapePDFHtml(r.date)}</td>
-
-                <td>
-                  <strong>${escapePDFHtml(r.clubs)}</strong>
-                </td>
-
-                <td>${escapePDFHtml(r.partner)}</td>
-
-                <td>${escapePDFHtml(r.location)}</td>
-
-                <td style="
-                  text-align:center;
-                  color:#d32f2f;
-                  font-weight:700;
-                  white-space:nowrap !important;
-                ">
-                  ${escapePDFHtml(r.pints)} Pin
-                </td>
-              </tr>
-            `;
-          });
-        } else {
-          tableHtml += `
-            <tr>
-              <td colspan="5" style="text-align:center; padding:12px;">
-                कुनै पनि डाटा उपलब्ध छैन
-              </td>
-            </tr>
-          `;
-        }
-
-        tableHtml += `
-            </tbody>
-          </table>
-        `;
+        reportTable = createApprovedTable();
       }
 
       else if (reportType === "pending_clubs") {
         subjectText = "Subject: Non-Participating Clubs List";
         filename = "Non_Participating_Clubs_Report.pdf";
-
-        tableHtml = `
-          <table>
-            <colgroup>
-              <col style="width:12%;">
-              <col style="width:63%;">
-              <col style="width:25%;">
-            </colgroup>
-
-            <thead>
-              <tr>
-                <th style="text-align:center;">क्र.सं.</th>
-                <th>क्लबको नाम (Club Name)</th>
-                <th style="text-align:center;">स्थिति (Status)</th>
-              </tr>
-            </thead>
-
-            <tbody>
-        `;
-
-        if (
-          globalDataCached.pendingClubs &&
-          globalDataCached.pendingClubs.length > 0
-        ) {
-          globalDataCached.pendingClubs.forEach((club, index) => {
-            tableHtml += `
-              <tr>
-                <td style="text-align:center;">
-                  ${index + 1}
-                </td>
-
-                <td>
-                  <strong>${escapePDFHtml(club)}</strong>
-                </td>
-
-                <td style="
-                  text-align:center;
-                  color:#d32f2f;
-                  font-weight:700;
-                ">
-                  Pending
-                </td>
-              </tr>
-            `;
-          });
-        } else {
-          tableHtml += `
-            <tr>
-              <td colspan="3" style="text-align:center; padding:12px;">
-                कुनै पनि डाटा उपलब्ध छैन
-              </td>
-            </tr>
-          `;
-        }
-
-        tableHtml += `
-            </tbody>
-          </table>
-        `;
+        reportTable = createPendingClubsTable();
       }
 
       else if (reportType === "upcoming") {
         subjectText = "Subject: Upcoming Blood Donation Camps Report";
         filename = "Upcoming_Camps_Report.pdf";
-
-        tableHtml = `
-          <table>
-            <colgroup>
-              <col style="width:14%;">
-              <col style="width:27%;">
-              <col style="width:30%;">
-              <col style="width:29%;">
-            </colgroup>
-
-            <thead>
-              <tr>
-                <th>मिति</th>
-                <th>आयोजक क्लब(हरू)</th>
-                <th>सहयोगी संस्था</th>
-                <th>स्थान र समय</th>
-              </tr>
-            </thead>
-
-            <tbody>
-        `;
-
-        if (
-          globalDataCached.upcomingRecords &&
-          globalDataCached.upcomingRecords.length > 0
-        ) {
-          globalDataCached.upcomingRecords.forEach(r => {
-            const locationAndTime =
-              `${r.location || ""}${r.time ? " (" + r.time + ")" : ""}`;
-
-            tableHtml += `
-              <tr>
-                <td>${escapePDFHtml(r.date)}</td>
-
-                <td>
-                  <strong>${escapePDFHtml(r.clubs)}</strong>
-                </td>
-
-                <td>${escapePDFHtml(r.partner)}</td>
-
-                <td>${escapePDFHtml(locationAndTime)}</td>
-              </tr>
-            `;
-          });
-        } else {
-          tableHtml += `
-            <tr>
-              <td colspan="4" style="text-align:center; padding:12px;">
-                कुनै पनि डाटा उपलब्ध छैन
-              </td>
-            </tr>
-          `;
-        }
-
-        tableHtml += `
-            </tbody>
-          </table>
-        `;
+        reportTable = createUpcomingTable();
       }
 
       else {
@@ -1501,74 +1271,168 @@
         "-" +
         String(today.getDate()).padStart(2, "0");
 
-      document.getElementById("pdfSubject").innerText = subjectText;
-      document.getElementById("pdfDate").innerText =
-        `Report Date: ${reportDate}`;
+      const headerColumns = [
+        logoDataUrl
+          ? {
+              image: logoDataUrl,
+              width: 52,
+              height: 52,
+              alignment: "left"
+            }
+          : {
+              text: "",
+              width: 52
+            },
 
-      document.getElementById("pdfAdminBadge").innerText =
-        `Admin: ${currentUser || "System Admin"}`;
-
-      pdfTableContainer.innerHTML = tableHtml;
-
-      await new Promise(resolve =>
-        requestAnimationFrame(() =>
-          requestAnimationFrame(resolve)
-        )
-      );
-
-      await waitForPDFLogo();
-
-      if (document.fonts && document.fonts.ready) {
-        await document.fonts.ready;
-      }
-
-      pdfWrapper.style.display = "block";
-
-      const options = {
-        margin: [8, 8, 10, 8],
-
-        filename: filename,
-
-        image: {
-          type: "jpeg",
-          quality: 0.98
+        {
+          width: "*",
+          stack: [
+            {
+              text: "Lions International",
+              alignment: "center",
+              bold: true,
+              fontSize: 19,
+              color: "#1a252f",
+              margin: [0, 2, 0, 0]
+            },
+            {
+              text: "District 325 F",
+              alignment: "center",
+              bold: true,
+              fontSize: 13,
+              color: "#c0392b",
+              margin: [0, 2, 0, 0]
+            },
+            {
+              text: "Blood Donation Management System",
+              alignment: "center",
+              fontSize: 8,
+              color: "#7f8c8d",
+              margin: [0, 2, 0, 0]
+            }
+          ]
         },
 
-        pagebreak: {
-          mode: ["css", "legacy"],
-          avoid: ["tr", "td", "th", ".pdf-signature"]
+        {
+          text: "",
+          width: 52
+        }
+      ];
+
+      const documentDefinition = {
+        pageSize: "A4",
+        pageOrientation: "landscape",
+        pageMargins: [25, 22, 25, 28],
+
+        defaultStyle: {
+          font: "NotoDevanagari",
+          fontSize: 8.2,
+          color: "#1f2933",
+          lineHeight: 1.15
         },
 
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          allowTaint: false,
-          backgroundColor: "#ffffff",
-          logging: false,
-          windowWidth: 1123,
-          scrollX: 0,
-          scrollY: 0,
-          x: 0,
-          y: 0,
-          removeContainer: true,
-          imageTimeout: 15000
-        },
+        content: [
+          {
+            canvas: [
+              {
+                type: "line",
+                x1: 0,
+                y1: 0,
+                x2: 792,
+                y2: 0,
+                lineWidth: 2.5,
+                lineColor: "#8b0000"
+              }
+            ],
+            margin: [0, 0, 0, 7]
+          },
 
-        jsPDF: {
-          unit: "mm",
-          format: "a4",
-          orientation: "landscape",
-          compress: true,
-          hotfixes: ["px_scaling"]
+          {
+            columns: headerColumns,
+            columnGap: 8,
+            margin: [0, 0, 0, 6]
+          },
+
+          {
+            canvas: [
+              {
+                type: "line",
+                x1: 0,
+                y1: 0,
+                x2: 792,
+                y2: 0,
+                lineWidth: 1,
+                lineColor: "#d32f2f"
+              }
+            ],
+            margin: [0, 0, 0, 8]
+          },
+
+          {
+            columns: [
+              {
+                text: subjectText,
+                bold: true,
+                fontSize: 9,
+                width: "*"
+              },
+              {
+                text: `Report Date: ${reportDate}`,
+                alignment: "right",
+                fontSize: 8,
+                width: "auto"
+              }
+            ],
+            margin: [0, 0, 0, 7]
+          },
+
+          reportTable,
+
+          {
+            stack: [
+              {
+                text: "........................................................",
+                alignment: "right",
+                color: "#9aa0a6",
+                margin: [0, 18, 0, 0]
+              },
+              {
+                text: "(Authorized Signatory)",
+                alignment: "right",
+                bold: true,
+                fontSize: 8.5,
+                margin: [0, 2, 0, 0]
+              },
+              {
+                text: `Admin: ${currentUser || "System Admin"}`,
+                alignment: "right",
+                fontSize: 7.5,
+                color: "#7f8c8d",
+                margin: [0, 1, 0, 0]
+              }
+            ],
+            unbreakable: true
+          }
+        ],
+
+        footer: function (currentPage, pageCount) {
+          return {
+            text: `${currentPage} / ${pageCount}`,
+            alignment: "right",
+            font: "NotoDevanagari",
+            fontSize: 7,
+            color: "#808080",
+            margin: [0, 0, 25, 8]
+          };
         }
       };
 
-      await html2pdf()
-        .set(options)
-        .from(pdfElement)
-        .save();
+      pdfMake
+        .createPdf(documentDefinition)
+        .download(filename, () => {
+          Swal.close();
+        });
 
-      Swal.close();
     } catch (error) {
       console.error("PDF generation error:", error);
 
@@ -1576,11 +1440,12 @@
 
       Swal.fire(
         "त्रुटि",
-        "PDF रिपोर्ट तयार गर्दा समस्या आयो। logo.png को स्थान र browser connection जाँच गर्नुहोस्।",
+        "PDF तयार हुन सकेन। GitHub मा NotoSansDevanagari-Regular.ttf, logo.png र index.html एउटै folder मा छन् कि जाँच गर्नुहोस्।",
         "error"
       );
     }
   }
+
 </script>
 
 </body>
