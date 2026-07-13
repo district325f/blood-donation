@@ -33,10 +33,10 @@
       width: 100%;
       background: #ffffff !important;
       color: #000000 !important;
-      padding: 40px;
+      padding: 20px 40px; /* हेडिङ माथि सार्न टप प्याडिङ घटाइयो */
       box-sizing: border-box;
     }
-    .pdf-header-line { height: 4px; background-color: #8b0000; margin-bottom: 20px; }
+    .pdf-header-line { height: 4px; background-color: #8b0000; margin-bottom: 15px; }
     .pdf-double-line { border-top: 2px double #d32f2f; margin: 15px 0; }
   </style>
 </head>
@@ -100,7 +100,7 @@
           <label class="form-label fw-semibold">कार्यक्रमको प्रकार छान्नुहोस् *</label>
           <select class="form-select bg-light fw-bold text-danger" id="campType" onchange="togglePintsField()" required>
             <option value="past">सम्पन्न भइसकेको क्याम्पको विवरण (स्वीकृति आवश्यक)</option>
-            <option value="upcoming">भвиष्यमा हुने आगामी क्याम्प (सिधै सार्वजनिक हुने)</option>
+            <option value="upcoming">भविष्यमा हुने आगामी क्याम्प (सिधै सार्वजनिक हुने)</option>
           </select>
         </div>
 
@@ -174,11 +174,6 @@
     <h5 class="text-warning fw-bold mb-3">⏳ स्वीकृत हुन बाँकी रेकर्डहरू (Pending Approvals)</h5>
     <div class="table-responsive mb-5">
       <table class="table table-bordered table-striped align-middle">
-        <thead class="table-dark">
-          <tr>
-            <th>मिति</th><th>सहयोगी संस्था</th><th>आयोजक क्लबहरू</th><th>स्थान</th><th>पिन्ट</th><th>कार्य</th>
-          </tr>
-        </thead>
         <tbody id="pendingTableBody"></tbody>
       </table>
     </div>
@@ -228,11 +223,11 @@
   <div class="pdf-container" id="pdfRenderArea">
     <div class="pdf-header-line"></div>
     <div style="text-align: center;">
-      <!-- 🦁 लायन्स लोगो (Base64 फम्र्याटमा सुरक्षित गरिएको, जसलाई कुनै ब्राउजर वा CORS ले ब्लक गर्न सक्दैन) -->
-      <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='240' fill='%23002d62'/><circle cx='256' cy='256' r='180' fill='%23f1a90a'/><path d='M180 220c10-30 40-50 76-50s66 20 76 50M180 292c10 30 40 50 76 50s66-20 76-50' stroke='%23002d62' stroke-width='12' fill='none'/><text x='256' y='270' font-family='Arial, sans-serif' font-weight='bold' font-size='55' fill='%23002d62' text-anchor='middle'>LIONS</text></svg>" alt="Lions Logo" style="width: 80px; height: 80px; margin-bottom: 12px; object-fit: contain;">
+      <!-- 🦁 लायन्स लोगो (निर्मल सफा PNG Base64 मा रूपान्तरित, जसलाई कसैले ब्लक गर्न सक्दैन) -->
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5Z9KfAAAAnFBMVEUAAADu00T////u00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00Tu00S8p7G9AAAAK3RSTlMAgO/vECBw72BwQIDv77Cg0HCw0CCw77CgcICw72BgcGCw0HAwQLDQ0HAwQLBskmoAAAFDSURBVFjH7dXZkoMgEAZgByOisgSNo9mSOfv+72uDo8gwi9bMv8wFHz9VAUgp9S8Xp3H7fN8bpxVbH6I43fswR8u+XyH07V8gshm4vYwGvW+pY9+9E0bKOfWp7m8p5eY6pY8vCH0jsh64nQ9i38XUh+wYFpXwYorqPhXU70q5uS7r4xNEnwshC6gP2TEmSuEwNfUfCqrrUsqvax6XEDInEizOBlE6UqO6pY68mE2wOJuI/mAn9BvYw0Yp7Kembmbe6mwmFsczMWeGscv3wAisgXWwByZgAtY7wOqsW2AFrIM9MAGpA6bA6qx7YAWsgz0wAasfIKbA6qwNsALWwR6YgAnY7wGrs26BFbAO9sAEpA5YAn8fSMEEWIDv90fAAArwP4F+An1B6As+gX4b6NfU0XN99FwXPfWj897Y/wHw0w0TFAp4vAAAAABJRU5ErkJggg==" alt="Lions Logo" style="width: 70px; height: 70px; margin-bottom: 5px; object-fit: contain;">
       
-      <h1 style="font-size: 26px; font-weight: bold; margin: 0; color: #1a252f; font-family: 'Segoe UI', Arial, sans-serif;">Lions International</h1>
-      <h2 style="font-size: 18px; color: #c0392b; margin: 5px 0; font-family: 'Segoe UI', Arial, sans-serif;">District 325 F</h2>
+      <h1 style="font-size: 24px; font-weight: bold; margin: 0; color: #1a252f; font-family: 'Segoe UI', Arial, sans-serif;">Lions International</h1>
+      <h2 style="font-size: 16px; color: #c0392b; margin: 3px 0; font-family: 'Segoe UI', Arial, sans-serif;">District 325 F</h2>
       <p style="font-size: 11px; color: #7f8c8d; font-style: italic; margin: 0;">Blood Donation Management System</p>
     </div>
     <div class="pdf-double-line"></div>
@@ -245,7 +240,7 @@
     <!-- टेबल डाटा प्रवाह हुने ठाउँ -->
     <div id="pdfTableContainer"></div>
 
-    <div style="margin-top: 60px; text-align: right; font-size: 12px; font-family: 'Segoe UI', sans-serif; line-height: 1.6;">
+    <div style="margin-top: 40px; text-align: right; font-size: 12px; font-family: 'Segoe UI', sans-serif; line-height: 1.6;">
       <p style="margin:0; color:#bdc3c7;">........................................................</p>
       <p style="font-weight: bold; margin: 3px 0 0 0; color: #2c3e50;">(Authorized Signatory)</p>
       <p id="pdfAdminBadge" style="color: #7f8c8d; font-size: 10px; margin: 0;">Admin: System Admin</p>
@@ -366,7 +361,7 @@
   function renderUpcomingTable(records) {
     let tbody = document.getElementById('upcomingTableBody');
     tbody.innerHTML = '';
-    if(records.length === 0) {
+    if(!records || records.length === 0) {
       tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">हाल कुनै पनि आगामी कार्यक्रमहरू सूचीकृत गरिएको छैन ।</td></tr>`;
     } else {
       records.forEach(r => {
@@ -486,7 +481,7 @@
   function renderAdminData(data) {
     let tbody = document.getElementById('pendingTableBody');
     tbody.innerHTML = '';
-    if(data.pendingRecords.length === 0) {
+    if(!data.pendingRecords || data.pendingRecords.length === 0) {
       tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">हाल कुनै पनि नयाँ रेकर्ड स्वीकृतिका लागि बाँकी छैन ।</td></tr>`;
     } else {
       data.pendingRecords.forEach(r => {
@@ -501,7 +496,7 @@
 
     let upTbody = document.getElementById('adminUpcomingTableBody');
     upTbody.innerHTML = '';
-    if(data.upcomingRecords.length === 0) {
+    if(!data.upcomingRecords || data.upcomingRecords.length === 0) {
       upTbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">हाल कुनै पनि आगामी कार्यक्रमहरू सूचीकृत छैनन् ।</td></tr>`;
     } else {
       data.upcomingRecords.forEach(r => {
@@ -516,15 +511,19 @@
 
     let pClubsUl = document.getElementById('pendingClubsList');
     pClubsUl.innerHTML = '';
-    data.pendingClubs.forEach(c => {
-      pClubsUl.innerHTML += `<li class="list-group-item list-group-item-danger small">📍 ${c}</li>`;
-    });
+    if(data.pendingClubs) {
+      data.pendingClubs.forEach(c => {
+        pClubsUl.innerHTML += `<li class="list-group-item list-group-item-danger small">📍 ${c}</li>`;
+      });
+    }
 
     let aClubsUl = document.getElementById('activeClubsList');
     aClubsUl.innerHTML = '';
-    data.activeClubs.forEach(c => {
-      aClubsUl.innerHTML += `<li class="list-group-item list-group-item-success small">🎉 ${c}</li>`;
-    });
+    if(data.activeClubs) {
+      data.activeClubs.forEach(c => {
+        aClubsUl.innerHTML += `<li class="list-group-item list-group-item-success small">🎉 ${c}</li>`;
+      });
+    }
   }
 
   function approveRecord(id) {
@@ -594,7 +593,7 @@
   function renderLiveTable(records) {
     let tbody = document.getElementById('liveTableBody');
     tbody.innerHTML = '';
-    if(records.length === 0) {
+    if(!records || records.length === 0) {
       tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">हालसम्म कुनै पनि स्वीकृत विवरणहरू फेला परेनन् ।</td></tr>`;
     } else {
       records.forEach(r => {
@@ -611,7 +610,7 @@
     }
   }
 
-  // 📄 परिमार्जित जुम-प्रुफ र सुरक्षित Base64 लोगो सहितको PDF जेनेरेटर
+  // 📄 परिमार्जित जुम-प्रुफ र सुरक्षित Base64 लोगो सहितका सबै रेकर्डहरू देखाउने PDF जेनेरेटर
   function generatePDFReport(reportType) {
     if(!globalDataCached) {
       Swal.fire("त्रुटि", "डाटा उपलब्ध छैन, कृपया पेज रिफ्रेस गर्नुहोस्।", "error");
@@ -628,25 +627,41 @@
       subjectText = "Subject: Blood Donation Camps Report (Approved)";
       filename = "Approved_Camps_Report.pdf";
       tableHtml += `<thead style="background-color:#f1f3f5 !important; font-weight:bold;"><tr><th style="padding:8px; border:1px solid #dee2e6;">मिति (Date)</th><th style="padding:8px; border:1px solid #dee2e6;">आयोजक क्लब(हरू)</th><th style="padding:8px; border:1px solid #dee2e6;">सहयोगी संस्था</th><th style="padding:8px; border:1px solid #dee2e6;">स्थान</th><th style="padding:8px; border:1px solid #dee2e6;">पिन्ट</th></tr></thead><tbody>`;
-      globalDataCached.approvedRecords.forEach(r => {
-        tableHtml += `<tr><td style="padding:8px; border:1px solid #dee2e6;">${r.date}</td><td style="padding:8px; border:1px solid #dee2e6;"><b>${r.clubs}</b></td><td style="padding:8px; border:1px solid #dee2e6;">${r.partner}</td><td style="padding:8px; border:1px solid #dee2e6;">${r.location}</td><td style="padding:8px; border:1px solid #dee2e6; color:#d32f2f; font-weight:bold;">${r.pints} Pin</td></tr>`;
-      });
+      
+      // बिना कुनै सीमा (Limit) सबै डाटा लुप चलाउने सुरक्षित कोड
+      if(globalDataCached.approvedRecords && globalDataCached.approvedRecords.length > 0) {
+        globalDataCached.approvedRecords.forEach(r => {
+          tableHtml += `<tr><td style="padding:8px; border:1px solid #dee2e6;">${r.date}</td><td style="padding:8px; border:1px solid #dee2e6;"><b>${r.clubs}</b></td><td style="padding:8px; border:1px solid #dee2e6;">${r.partner}</td><td style="padding:8px; border:1px solid #dee2e6;">${r.location}</td><td style="padding:8px; border:1px solid #dee2e6; color:#d32f2f; font-weight:bold;">${r.pints} Pin</td></tr>`;
+        });
+      } else {
+        tableHtml += `<tr><td colspan="5" style="text-align:center; padding:10px;">कुनै पनि डाटा उपलब्ध छैन</td></tr>`;
+      }
     } 
     else if(reportType === 'pending_clubs') {
       subjectText = "Subject: Non-Participating Clubs List";
       filename = "Non_Participating_Clubs_Report.pdf";
       tableHtml += `<thead style="background-color:#f1f3f5 !important; font-weight:bold;"><tr><th style="padding:8px; border:1px solid #dee2e6; width:15%;">क्र.सं.</th><th style="padding:8px; border:1px solid #dee2e6;">क्लबको नाम (Club Name)</th><th style="padding:8px; border:1px solid #dee2e6;">स्थिति (Status)</th></tr></thead><tbody>`;
-      globalDataCached.pendingClubs.forEach((c, index) => {
-        tableHtml += `<tr><td style="padding:8px; border:1px solid #dee2e6;">${index + 1}</td><td style="padding:8px; border:1px solid #dee2e6;"><b>${c}</b></td><td style="padding:8px; border:1px solid #dee2e6; color:#d32f2f; font-weight:bold;">Pending</td></tr>`;
-      });
+      
+      if(globalDataCached.pendingClubs && globalDataCached.pendingClubs.length > 0) {
+        globalDataCached.pendingClubs.forEach((c, index) => {
+          tableHtml += `<tr><td style="padding:8px; border:1px solid #dee2e6;">${index + 1}</td><td style="padding:8px; border:1px solid #dee2e6;"><b>${c}</b></td><td style="padding:8px; border:1px solid #dee2e6; color:#d32f2f; font-weight:bold;">Pending</td></tr>`;
+        });
+      } else {
+        tableHtml += `<tr><td colspan="3" style="text-align:center; padding:10px;">कुनै पनि डाटा उपलब्ध छैन</td></tr>`;
+      }
     } 
     else if(reportType === 'upcoming') {
       subjectText = "Subject: Upcoming Blood Donation Camps Report";
       filename = "Upcoming_Camps_Report.pdf";
       tableHtml += `<thead style="background-color:#f1f3f5 !important; font-weight:bold;"><tr><th style="padding:8px; border:1px solid #dee2e6;">मिति</th><th style="padding:8px; border:1px solid #dee2e6;">आयोजक क्लब(हरू)</th><th style="padding:8px; border:1px solid #dee2e6;">सहयोगी संस्था</th><th style="padding:8px; border:1px solid #dee2e6;">स्थान र समय</th></tr></thead><tbody>`;
-      globalDataCached.upcomingRecords.forEach(r => {
-        tableHtml += `<tr><td style="padding:8px; border:1px solid #dee2e6;">${r.date}</td><td style="padding:8px; border:1px solid #dee2e6;"><b>${r.clubs}</b></td><td style="padding:8px; border:1px solid #dee2e6;">${r.partner}</td><td style="padding:8px; border:1px solid #dee2e6;">${r.location} (${r.time})</td></tr>`;
-      });
+      
+      if(globalDataCached.upcomingRecords && globalDataCached.upcomingRecords.length > 0) {
+        globalDataCached.upcomingRecords.forEach(r => {
+          tableHtml += `<tr><td style="padding:8px; border:1px solid #dee2e6;">${r.date}</td><td style="padding:8px; border:1px solid #dee2e6;"><b>${r.clubs}</b></td><td style="padding:8px; border:1px solid #dee2e6;">${r.partner}</td><td style="padding:8px; border:1px solid #dee2e6;">${r.location} (${r.time})</td></tr>`;
+        });
+      } else {
+        tableHtml += `<tr><td colspan="4" style="text-align:center; padding:10px;">कुनै पनि डाटा उपलब्ध छैन</td></tr>`;
+      }
     }
     tableHtml += `</tbody></table>`;
 
@@ -659,7 +674,7 @@
     const element = document.getElementById('pdfRenderArea');
     
     const opt = {
-      margin:       [30, 30, 40, 30],
+      margin:       [15, 30, 30, 30], /* माथिको खाली भाग घटाएर हेडिङलाई मिलाइयो */
       filename:     filename,
       image:        { type: 'jpeg', quality: 1.0 },
       html2canvas:  { 
@@ -667,12 +682,11 @@
         useCORS: true, 
         backgroundColor: '#ffffff',
         logging: false,
-        windowWidth: 794 // मोबाइलको भ्युपोर्टमा धक्का नपुगोस् भन्नका लागि फिक्स्ड चौडाइ
+        windowWidth: 794
       },
       jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait' }
     };
 
-    // ब्याकग्राउन्डमै सफासँग स्क्रिनसट लिएर सिधै डाउनलोड गर्छ
     html2pdf().set(opt).from(element).save().then(() => {
       Swal.close();
     }).catch(err => {
