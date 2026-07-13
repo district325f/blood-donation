@@ -1022,14 +1022,15 @@
   async function preparePdfFont() {
     if (pdfFontReady) return;
 
-    const fontUrl = new URL(
-      "NotoSansDevanagari-Regular.ttf",
-      window.location.href
-    ).href;
+    /*
+     * नेपाली PDF font GitHub मा upload गर्नुपर्दैन।
+     * Font सुरक्षित CDN बाट स्वतः load हुन्छ।
+     */
+    const fontUrl =
+      "https://cdn.jsdelivr.net/gh/openmaptiles/fonts@master/" +
+      "noto-sans/NotoSansDevanagari-Regular.ttf";
 
-    const fontBase64 = await fileToBase64(
-      fontUrl + "?v=" + Date.now()
-    );
+    const fontBase64 = await fileToBase64(fontUrl);
 
     pdfMake.vfs["NotoSansDevanagari-Regular.ttf"] = fontBase64;
 
@@ -1440,7 +1441,7 @@
 
       Swal.fire(
         "त्रुटि",
-        "PDF तयार हुन सकेन। GitHub मा NotoSansDevanagari-Regular.ttf, logo.png र index.html एउटै folder मा छन् कि जाँच गर्नुहोस्।",
+        "PDF तयार हुन सकेन। इन्टरनेट कनेक्सन र GitHub मा logo.png को स्थान जाँच गर्नुहोस्।",
         "error"
       );
     }
