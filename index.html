@@ -513,6 +513,19 @@
     return Number.isFinite(numberValue) ? numberValue : 0;
   }
 
+  function calculateApprovedPintTotal(records) {
+    return (records || []).reduce(
+      (total, record) => total + parsePintsValue(record.pints),
+      0
+    );
+  }
+
+  function formatPintTotal(value) {
+    return Number.isInteger(value)
+      ? String(value)
+      : Number(value).toFixed(2);
+  }
+
   function calculateDashboardStats(approvedRecords) {
     const campCounts = {};
     const pintTotals = {};
@@ -1060,6 +1073,20 @@
         </tr>
       `;
     });
+
+    const totalPints = calculateApprovedPintTotal(records);
+
+    tbody.innerHTML += `
+      <tr class="table-danger">
+        <td colspan="4" class="text-end fw-bold">
+          🔴 कुल संकलित रगत
+        </td>
+        <td class="fw-bold text-danger">
+          ${formatPintTotal(totalPints)} पिन्ट
+        </td>
+        <td></td>
+      </tr>
+    `;
   }
 
 
@@ -1097,7 +1124,7 @@
       `;
     }
 
-    return records.map((r, index) => `
+    const recordRows = records.map((r, index) => `
       <tr>
         <td class="center-cell">${index + 1}</td>
         <td>${escapeHtml(r.date)}</td>
@@ -1107,6 +1134,21 @@
         <td class="pint-cell">${escapeHtml(r.pints)} Pin</td>
       </tr>
     `).join("");
+
+    const totalPints = calculateApprovedPintTotal(records);
+
+    const totalRow = `
+      <tr class="grand-total-row">
+        <td colspan="5" class="grand-total-label">
+          🔴 कुल संकलित रगत
+        </td>
+        <td class="grand-total-value">
+          ${escapeHtml(formatPintTotal(totalPints))} पिन्ट
+        </td>
+      </tr>
+    `;
+
+    return recordRows + totalRow;
   }
 
   function buildPendingRows() {
@@ -1455,6 +1497,25 @@
       #printReportArea .empty-row {
         text-align: center;
         padding: 12px !important;
+      }
+
+      #printReportArea .grand-total-row td {
+        background: #fdecec !important;
+        border-top: 2px solid #c62828 !important;
+        font-weight: 700;
+      }
+
+      #printReportArea .grand-total-label {
+        text-align: right;
+        color: #7f1d1d;
+        font-size: 11px;
+      }
+
+      #printReportArea .grand-total-value {
+        text-align: center;
+        color: #c62828;
+        white-space: nowrap;
+        font-size: 11px;
       }
 
       #printReportArea .signature {
