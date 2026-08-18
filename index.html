@@ -1585,8 +1585,94 @@
       .replace(/'/g, "&#039;");
   }
 
+
+  /* =========================================================
+     PDF REPORT DATE SORTING ONLY
+     - Admin/Sheet order परिवर्तन हुँदैन
+     - PDF report मा मात्र नेपाली मितिअनुसार पुरानो -> नयाँ
+     - Approved र Upcoming दुवै report मा लागू
+  ========================================================= */
+
+  function nepaliMonthOrder(monthName) {
+    const months = {
+      "बैशाख": 1,
+      "वैशाख": 1,
+      "जेठ": 2,
+      "असार": 3,
+      "साउन": 4,
+      "श्रावण": 4,
+      "भदौ": 5,
+      "भाद्र": 5,
+      "असोज": 6,
+      "आश्विन": 6,
+      "कार्तिक": 7,
+      "कात्तिक": 7,
+      "मंसिर": 8,
+      "मङ्सिर": 8,
+      "पुस": 9,
+      "पौष": 9,
+      "माघ": 10,
+      "फागुन": 11,
+      "चैत": 12,
+      "चैत्र": 12
+    };
+
+    return months[String(monthName || "").trim()] || 99;
+  }
+
+  function devanagariToEnglishNumber(value) {
+    const map = {
+      "०":"0","१":"1","२":"2","३":"3","४":"4",
+      "५":"5","६":"6","७":"7","८":"8","९":"9"
+    };
+
+    return String(value || "").replace(/[०-९]/g, d => map[d] || d);
+  }
+
+  function getNepaliDateSortKey(dateValue) {
+    const raw = String(dateValue || "").trim();
+    const normalized = devanagariToEnglishNumber(raw);
+
+    let year = 9999;
+    let month = 99;
+    let day = 99;
+
+    // Expected examples:
+    // 2083-भदौ-10 / २०८३-भदौ-10 / २०८३-भदौ-१०
+    const parts = normalized.split("-").map(p => p.trim());
+
+    if (parts.length >= 3) {
+      const parsedYear = parseInt(parts[0], 10);
+      const parsedDay = parseInt(parts[2], 10);
+
+      if (Number.isFinite(parsedYear)) year = parsedYear;
+      month = nepaliMonthOrder(parts[1]);
+      if (Number.isFinite(parsedDay)) day = parsedDay;
+    }
+
+    return {
+      year,
+      month,
+      day,
+      raw
+    };
+  }
+
+  function sortRecordsByNepaliDate(records) {
+    return [...(records || [])].sort((a, b) => {
+      const A = getNepaliDateSortKey(a.date);
+      const B = getNepaliDateSortKey(b.date);
+
+      if (A.year !== B.year) return A.year - B.year;
+      if (A.month !== B.month) return A.month - B.month;
+      if (A.day !== B.day) return A.day - B.day;
+
+      return A.raw.localeCompare(B.raw);
+    });
+  }
+
   function buildApprovedRows() {
-    const records = globalDataCached.approvedRecords || [];
+    const records = sortRecordsByNepaliDate(globalDataCached.approvedRecords || []);
 
     if (records.length === 0) {
       return `
@@ -1644,22 +1730,23 @@
   }
 
   function buildUpcomingRows() {
-    const records = globalDataCached.upcomingRecords || [];
+    const records = sortRecordsByNepaliDate(globalDataCached.upcomingRecords || []);
 
     if (records.length === 0) {
       return `
         <tr>
-          <td colspan="4" class="empty-row">कुनै पनि डाटा उपलब्ध छैन</td>
+          <td colspan="5" class="empty-row">कुनै पनि डाटा उपलब्ध छैन</td>
         </tr>
       `;
     }
 
-    return records.map(r => {
+    return records.map((r, index) => {
       const locationAndTime =
         `${pdfValue(r.location)}${r.time ? " (" + pdfValue(r.time) + ")" : ""}`;
 
       return `
         <tr>
+          <td class="center-cell">${index + 1}</td>
           <td>${escapeHtml(r.date)}</td>
           <td class="club-cell">${escapeHtml(r.clubs)}</td>
           <td>${escapeHtml(r.partner)}</td>
@@ -1720,13 +1807,15 @@
       return `
         <table class="report-table">
           <colgroup>
+            <col style="width:6%">
             <col style="width:14%">
+            <col style="width:25%">
+            <col style="width:28%">
             <col style="width:27%">
-            <col style="width:30%">
-            <col style="width:29%">
           </colgroup>
           <thead>
             <tr>
+              <th class="center-cell">सि.नं.</th>
               <th>मिति</th>
               <th>आयोजक क्लब(हरू)</th>
               <th>सहयोगी संस्था</th>
