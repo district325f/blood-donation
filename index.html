@@ -332,6 +332,26 @@
       </table>
     </div>
 
+    <h5 class="text-success fw-bold mb-3">
+      ✅ स्वीकृत क्याम्प सम्पादन / हटाउने (Approved Records Management)
+    </h5>
+
+    <div class="table-responsive mb-5">
+      <table class="table table-bordered table-striped align-middle">
+        <thead class="table-success">
+          <tr>
+            <th>मिति</th>
+            <th>क्लबहरू</th>
+            <th>सहयोगी संस्था</th>
+            <th>स्थान</th>
+            <th>पिन्ट</th>
+            <th>कार्य</th>
+          </tr>
+        </thead>
+        <tbody id="adminApprovedTableBody"></tbody>
+      </table>
+    </div>
+
     <div class="row">
       <div class="col-md-6">
         <h5 class="text-danger fw-bold mb-3">🛑 कार्यक्रम गर्न बाँकी क्लबहरू</h5>
@@ -376,6 +396,101 @@
     </div>
   </div>
 
+</div>
+
+<!-- =====================================================
+     ADMIN EDIT RECORD MODAL
+====================================================== -->
+<div class="modal fade" id="editRecordModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">✏️ रक्तदान विवरण सम्पादन गर्नुहोस्</h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal">
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <input type="hidden" id="editRecordId">
+        <input type="hidden" id="editRecordStatus">
+
+        <div class="alert alert-light border py-2 mb-3">
+          स्थिति:
+          <strong id="editStatusLabel">-</strong>
+          <span class="text-muted small ms-2">
+            (Edit गर्दा Status परिवर्तन हुँदैन)
+          </span>
+        </div>
+
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">मिति *</label>
+            <input type="text" class="form-control" id="editDate" required>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">सहयोगी संस्था *</label>
+            <input type="text" class="form-control" id="editPartner" required>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold">
+              आयोजक क्लब(हरू) *
+            </label>
+            <select
+              class="form-select"
+              id="editClubs"
+              multiple
+              style="height:150px;"
+              required>
+            </select>
+            <div class="form-text">
+              Desktop मा Ctrl थिचेर एकभन्दा बढी क्लब चयन गर्न सक्नुहुन्छ ।
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">कार्यक्रम स्थल *</label>
+            <input type="text" class="form-control" id="editLocation" required>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">समय *</label>
+            <input type="text" class="form-control" id="editTime" required>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">संकलित रगत (पिन्ट)</label>
+            <input type="number" class="form-control" id="editPints" min="0">
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal">
+          रद्द गर्नुहोस्
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-primary fw-bold"
+          id="saveEditBtn"
+          onclick="saveEditedRecord()">
+          💾 Update गर्नुहोस्
+        </button>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
@@ -432,9 +547,12 @@
 
 <script>
   let myModal;
+  let editRecordModal;
+  let adminRecordMap = {};
 
   window.addEventListener('DOMContentLoaded', () => {
     myModal = new bootstrap.Modal(document.getElementById('loginModal'));
+    editRecordModal = new bootstrap.Modal(document.getElementById('editRecordModal'));
     loadSystemData();
   });
 
@@ -810,6 +928,19 @@
   }
 
   function renderAdminData(data) {
+    /*
+     * Admin Edit/Delete का लागि सबै record ID map मा राखिन्छ।
+     */
+    adminRecordMap = {};
+
+    [
+      ...(data.pendingRecords || []),
+      ...(data.upcomingRecords || []),
+      ...(data.approvedRecords || [])
+    ].forEach(record => {
+      adminRecordMap[String(record.id)] = record;
+    });
+
     const tbody = document.getElementById('pendingTableBody');
     tbody.innerHTML = '';
 
@@ -833,11 +964,25 @@
               <span class="badge bg-danger">${r.pints} पिन्ट</span>
             </td>
             <td>
-              <button
-                class="btn btn-sm btn-success"
-                onclick="approveRecord('${r.id}')">
-                ✔️ Approve
-              </button>
+              <div class="d-flex flex-wrap gap-1">
+                <button
+                  class="btn btn-sm btn-success"
+                  onclick="approveRecord('${r.id}')">
+                  ✔️ Approve
+                </button>
+
+                <button
+                  class="btn btn-sm btn-warning"
+                  onclick="openEditRecord('${r.id}')">
+                  ✏️ Edit
+                </button>
+
+                <button
+                  class="btn btn-sm btn-danger"
+                  onclick="deleteAdminRecord('${r.id}')">
+                  🗑️ Delete
+                </button>
+              </div>
             </td>
           </tr>
         `;
@@ -873,11 +1018,67 @@
             </td>
 
             <td>
-              <button
-                class="btn btn-sm btn-primary"
-                onclick="convertUpcomingToPast('${r.id}')">
-                💾 सम्पन्न भयो
-              </button>
+              <div class="d-flex flex-wrap gap-1">
+                <button
+                  class="btn btn-sm btn-primary"
+                  onclick="convertUpcomingToPast('${r.id}')">
+                  💾 सम्पन्न भयो
+                </button>
+
+                <button
+                  class="btn btn-sm btn-warning"
+                  onclick="openEditRecord('${r.id}')">
+                  ✏️ Edit
+                </button>
+
+                <button
+                  class="btn btn-sm btn-danger"
+                  onclick="deleteAdminRecord('${r.id}')">
+                  🗑️ Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    const approvedTbody = document.getElementById('adminApprovedTableBody');
+    approvedTbody.innerHTML = '';
+
+    if (!data.approvedRecords || data.approvedRecords.length === 0) {
+      approvedTbody.innerHTML = `
+        <tr>
+          <td colspan="6" class="text-center text-muted">
+            हाल कुनै पनि स्वीकृत क्याम्प विवरण उपलब्ध छैन ।
+          </td>
+        </tr>
+      `;
+    } else {
+      data.approvedRecords.forEach(r => {
+        approvedTbody.innerHTML += `
+          <tr>
+            <td>${r.date}</td>
+            <td><strong>${r.clubs}</strong></td>
+            <td>${r.partner}</td>
+            <td>${r.location}</td>
+            <td>
+              <span class="badge bg-danger">${r.pints} पिन्ट</span>
+            </td>
+            <td>
+              <div class="d-flex flex-wrap gap-1">
+                <button
+                  class="btn btn-sm btn-warning"
+                  onclick="openEditRecord('${r.id}')">
+                  ✏️ Edit
+                </button>
+
+                <button
+                  class="btn btn-sm btn-danger"
+                  onclick="deleteAdminRecord('${r.id}')">
+                  🗑️ Delete
+                </button>
+              </div>
             </td>
           </tr>
         `;
@@ -909,6 +1110,211 @@
         `;
       });
     }
+  }
+
+  /* =========================================================
+     ADMIN EDIT / DELETE — ADDITIVE UPDATE ONLY
+  ========================================================= */
+
+  function openEditRecord(recordId) {
+    const record = adminRecordMap[String(recordId)];
+
+    if (!record) {
+      Swal.fire("त्रुटि", "सम्पादन गर्ने रेकर्ड फेला परेन ।", "error");
+      return;
+    }
+
+    document.getElementById('editRecordId').value = record.id;
+    document.getElementById('editRecordStatus').value = record.status || "";
+    document.getElementById('editStatusLabel').innerText = record.status || "-";
+    document.getElementById('editDate').value = record.date || "";
+    document.getElementById('editPartner').value = record.partner || "";
+    document.getElementById('editLocation').value = record.location || "";
+    document.getElementById('editTime').value = record.time || "";
+    document.getElementById('editPints').value =
+      record.pints !== undefined && record.pints !== null ? record.pints : "";
+
+    const editClubs = document.getElementById('editClubs');
+    editClubs.innerHTML = '';
+
+    const selectedClubNames = String(record.clubs || "")
+      .split(",")
+      .map(name => name.trim())
+      .filter(Boolean);
+
+    const allClubs = (globalDataCached && globalDataCached.clubs)
+      ? globalDataCached.clubs
+      : [];
+
+    allClubs.forEach(club => {
+      const option = document.createElement('option');
+      option.value = club;
+      option.textContent = club;
+      option.selected = selectedClubNames.includes(String(club).trim());
+      editClubs.appendChild(option);
+    });
+
+    editRecordModal.show();
+  }
+
+  function saveEditedRecord() {
+    if (!currentUser) {
+      Swal.fire("त्रुटि", "Admin Login आवश्यक छ ।", "error");
+      return;
+    }
+
+    const recordId = document.getElementById('editRecordId').value;
+
+    const selectedClubs = Array
+      .from(document.getElementById('editClubs').selectedOptions)
+      .map(option => option.value);
+
+    const formData = {
+      partnerOrg: document.getElementById('editPartner').value.trim(),
+      bsDate: document.getElementById('editDate').value.trim(),
+      clubs: selectedClubs.join(", "),
+      location: document.getElementById('editLocation').value.trim(),
+      time: document.getElementById('editTime').value.trim(),
+      pints: document.getElementById('editPints').value
+    };
+
+    if (
+      !formData.partnerOrg ||
+      !formData.bsDate ||
+      !formData.clubs ||
+      !formData.location ||
+      !formData.time
+    ) {
+      Swal.fire(
+        "चेतावनी",
+        "कृपया आवश्यक सबै विवरण पूरा गर्नुहोस् ।",
+        "warning"
+      );
+      return;
+    }
+
+    const saveBtn = document.getElementById('saveEditBtn');
+    saveBtn.disabled = true;
+    saveBtn.innerText = "अद्यावधिक हुँदैछ...";
+
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "updateRecord",
+        recordId: recordId,
+        formData: formData,
+        updatedBy: currentUser
+      })
+    })
+    .then(res => res.json())
+    .then(res => {
+      saveBtn.disabled = false;
+      saveBtn.innerText = "💾 Update गर्नुहोस्";
+
+      if (res.status === "updated") {
+        editRecordModal.hide();
+
+        Swal.fire({
+          title: "सफल!",
+          text: res.message || "रेकर्ड सफलतापूर्वक अद्यावधिक गरिएको छ ।",
+          icon: "success",
+          confirmButtonText: "ठीक छ"
+        });
+
+        loadSystemData();
+      } else {
+        Swal.fire(
+          "त्रुटि",
+          res.message || "रेकर्ड अद्यावधिक गर्न सकिएन ।",
+          "error"
+        );
+      }
+    })
+    .catch(err => {
+      console.error(err);
+
+      saveBtn.disabled = false;
+      saveBtn.innerText = "💾 Update गर्नुहोस्";
+
+      Swal.fire(
+        "त्रुटि",
+        "सर्भरसँग सम्पर्क गर्दा समस्या आयो ।",
+        "error"
+      );
+    });
+  }
+
+  function deleteAdminRecord(recordId) {
+    if (!currentUser) {
+      Swal.fire("त्रुटि", "Admin Login आवश्यक छ ।", "error");
+      return;
+    }
+
+    const record = adminRecordMap[String(recordId)];
+
+    if (!record) {
+      Swal.fire("त्रुटि", "हटाउने रेकर्ड फेला परेन ।", "error");
+      return;
+    }
+
+    Swal.fire({
+      title: "रेकर्ड हटाउने हो?",
+      html:
+        `<div class="text-start">` +
+        `<b>मिति:</b> ${record.date || "-"}<br>` +
+        `<b>क्लब:</b> ${record.clubs || "-"}<br><br>` +
+        `<span class="text-danger fw-bold">यो विवरण स्थायी रूपमा हटाइनेछ ।</span>` +
+        `</div>`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc3545",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "हो, Delete गर्नुहोस्",
+      cancelButtonText: "रद्द गर्नुहोस्"
+    }).then(result => {
+      if (!result.isConfirmed) return;
+
+      showLoading("रेकर्ड हटाइँदैछ...");
+
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "deleteRecord",
+          recordId: recordId,
+          deletedBy: currentUser
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        Swal.close();
+
+        if (res.status === "deleted") {
+          Swal.fire(
+            "हटाइयो!",
+            res.message || "रेकर्ड सफलतापूर्वक हटाइएको छ ।",
+            "success"
+          );
+
+          loadSystemData();
+        } else {
+          Swal.fire(
+            "त्रुटि",
+            res.message || "रेकर्ड हटाउन सकिएन ।",
+            "error"
+          );
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        Swal.close();
+
+        Swal.fire(
+          "त्रुटि",
+          "रेकर्ड हटाउने क्रममा सर्भर समस्या आयो ।",
+          "error"
+        );
+      });
+    });
   }
 
   function approveRecord(id) {
