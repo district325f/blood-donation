@@ -261,12 +261,13 @@
             </select>
 
             <input
-              type="number"
+              type="text"
               class="form-control"
               id="dateDay"
               placeholder="गते"
-              min="1"
-              max="32"
+              inputmode="numeric"
+              maxlength="2"
+              oninput="handleNepaliDayInput(this)"
               required>
           </div>
         </div>
@@ -841,7 +842,7 @@
       tbody.innerHTML += `
         <tr class="table-warning">
           <td>
-            <span class="badge bg-primary">${r.date}</span>
+            <span class="badge bg-primary">${formatNepaliDateDisplay(r.date)}</span>
           </td>
 
           <td>
@@ -858,6 +859,54 @@
         </tr>
       `;
     });
+  }
+
+
+  /* =========================================================
+     NEPALI DATE DIGIT DISPLAY/SAVE ONLY
+     Existing system logic unchanged.
+  ========================================================= */
+
+  function toNepaliDigits(value) {
+    const map = {
+      "0":"०","1":"१","2":"२","3":"३","4":"४",
+      "5":"५","6":"६","7":"७","8":"८","9":"९"
+    };
+
+    return String(value ?? "").replace(/[0-9]/g, d => map[d] || d);
+  }
+
+  function toEnglishDigits(value) {
+    const map = {
+      "०":"0","१":"1","२":"2","३":"3","४":"4",
+      "५":"5","६":"6","७":"7","८":"8","९":"9"
+    };
+
+    return String(value ?? "").replace(/[०-९]/g, d => map[d] || d);
+  }
+
+  function formatNepaliDateDisplay(value) {
+    return toNepaliDigits(String(value ?? ""));
+  }
+
+  function handleNepaliDayInput(input) {
+    let english = toEnglishDigits(input.value).replace(/[^0-9]/g, "");
+
+    if (english.length > 2) {
+      english = english.slice(0, 2);
+    }
+
+    if (english !== "") {
+      let day = parseInt(english, 10);
+
+      if (Number.isFinite(day)) {
+        if (day > 32) day = 32;
+        if (day < 1) day = 1;
+        english = String(day);
+      }
+    }
+
+    input.value = toNepaliDigits(english);
   }
 
   function handleFormSubmit(e) {
@@ -878,7 +927,7 @@
     const bsDateStr =
       `${document.getElementById('dateYear').value}-` +
       `${document.getElementById('dateMonth').value}-` +
-      `${document.getElementById('dateDay').value}`;
+      `${toNepaliDigits(document.getElementById('dateDay').value)}`;
 
     const formData = {
       campType: document.getElementById('campType').value,
@@ -1022,7 +1071,7 @@
       data.pendingRecords.forEach(r => {
         tbody.innerHTML += `
           <tr>
-            <td>${r.date}</td>
+            <td>${formatNepaliDateDisplay(r.date)}</td>
             <td>${r.partner}</td>
             <td><strong>${r.clubs}</strong></td>
             <td>${r.location}</td>
@@ -1070,7 +1119,7 @@
       data.upcomingRecords.forEach(r => {
         upTbody.innerHTML += `
           <tr>
-            <td>${r.date}</td>
+            <td>${formatNepaliDateDisplay(r.date)}</td>
             <td><strong>${r.clubs}</strong></td>
             <td>${r.location}</td>
 
@@ -1124,7 +1173,7 @@
       data.approvedRecords.forEach(r => {
         approvedTbody.innerHTML += `
           <tr>
-            <td>${r.date}</td>
+            <td>${formatNepaliDateDisplay(r.date)}</td>
             <td><strong>${r.clubs}</strong></td>
             <td>${r.partner}</td>
             <td>${r.location}</td>
@@ -1193,7 +1242,7 @@
     document.getElementById('editRecordId').value = record.id;
     document.getElementById('editRecordStatus').value = record.status || "";
     document.getElementById('editStatusLabel').innerText = record.status || "-";
-    document.getElementById('editDate').value = record.date || "";
+    document.getElementById('editDate').value = formatNepaliDateDisplay(record.date || "");
     document.getElementById('editPartner').value = record.partner || "";
     document.getElementById('editLocation').value = record.location || "";
     document.getElementById('editTime').value = record.time || "";
@@ -1237,7 +1286,7 @@
 
     const formData = {
       partnerOrg: document.getElementById('editPartner').value.trim(),
-      bsDate: document.getElementById('editDate').value.trim(),
+      bsDate: formatNepaliDateDisplay(document.getElementById('editDate').value.trim()),
       clubs: selectedClubs.join(", "),
       location: document.getElementById('editLocation').value.trim(),
       time: document.getElementById('editTime').value.trim(),
@@ -1327,7 +1376,7 @@
       title: "रेकर्ड हटाउने हो?",
       html:
         `<div class="text-start">` +
-        `<b>मिति:</b> ${record.date || "-"}<br>` +
+        `<b>मिति:</b> ${formatNepaliDateDisplay(record.date || "-")}<br>` +
         `<b>क्लब:</b> ${record.clubs || "-"}<br><br>` +
         `<span class="text-danger fw-bold">यो विवरण स्थायी रूपमा हटाइनेछ ।</span>` +
         `</div>`,
@@ -1520,7 +1569,7 @@
       tbody.innerHTML += `
         <tr>
           <td>
-            <span class="badge bg-secondary">${r.date}</span>
+            <span class="badge bg-secondary">${formatNepaliDateDisplay(r.date)}</span>
           </td>
 
           <td>
@@ -1685,7 +1734,7 @@
     const recordRows = records.map((r, index) => `
       <tr>
         <td class="center-cell">${index + 1}</td>
-        <td>${escapeHtml(r.date)}</td>
+        <td>${escapeHtml(formatNepaliDateDisplay(r.date))}</td>
         <td class="club-cell">${escapeHtml(r.clubs)}</td>
         <td>${escapeHtml(r.partner)}</td>
         <td>${escapeHtml(r.location)}</td>
@@ -1747,7 +1796,7 @@
       return `
         <tr>
           <td class="center-cell">${index + 1}</td>
-          <td>${escapeHtml(r.date)}</td>
+          <td>${escapeHtml(formatNepaliDateDisplay(r.date))}</td>
           <td class="club-cell">${escapeHtml(r.clubs)}</td>
           <td>${escapeHtml(r.partner)}</td>
           <td>${escapeHtml(locationAndTime)}</td>
