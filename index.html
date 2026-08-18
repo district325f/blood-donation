@@ -14,6 +14,35 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
+
+    .header-logo {
+      position: absolute;
+      left: 28px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      z-index: 2;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.18));
+    }
+
+    @media (max-width: 768px) {
+      .header-logo {
+        left: 14px;
+        width: 72px;
+        height: 72px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-logo {
+        left: 10px;
+        width: 58px;
+        height: 58px;
+      }
+    }
+
     .main-header {
       background: linear-gradient(135deg, #8b0000, #d32f2f);
       color: white;
@@ -76,6 +105,13 @@
 <div class="container my-4">
 
   <div class="main-header text-center mb-4">
+
+    <img
+      src="logo.png"
+      alt="Lions Logo"
+      class="header-logo"
+      onerror="this.style.display='none';">
+
     <div class="d-flex justify-content-between align-items-center px-3 mb-2">
       <div></div>
 
